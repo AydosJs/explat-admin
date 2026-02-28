@@ -1,9 +1,4 @@
+// Root UI is rendered via TanStack Router (see src/routes/ and src/main.tsx)
 export function App() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="font-medium">Hello World</div>
-    </div>
-  )
+  return null;
 }
-
-export default App
