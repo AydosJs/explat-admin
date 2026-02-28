@@ -3,6 +3,7 @@ import { rootRoute } from "./routes/__root.route";
 import { Route as indexRoute } from "./routes/index";
 import { Route as loginRoute } from "./routes/login";
 import { Route as merchantsMerchantIdRoute } from "./routes/merchants.$merchantId";
+import { Route as payInCreateRoute } from "./routes/pay-in.create";
 import { Route as payInRoute } from "./routes/pay-in";
 
 const routeTree = rootRoute.addChildren([
@@ -10,6 +11,7 @@ const routeTree = rootRoute.addChildren([
   loginRoute,
   merchantsMerchantIdRoute,
   payInRoute,
+  payInCreateRoute,
 ]);
 
 export const router = createRouter({ routeTree });

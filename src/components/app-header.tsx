@@ -153,31 +153,29 @@ export function AppHeader() {
       : pathname.slice(1) || t("sidebar.dashboard");
 
   return (
-    <header
-      className={cn(
-        "flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-background px-3 sm:px-4"
-      )}
-    >
-      <div className="flex min-w-0 flex-1 items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleSidebar}
-          aria-label={t("header.openMenu")}
-          className="shrink-0 md:hidden"
-        >
-          <MenuIcon className="size-5" />
-        </Button>
-        {pageTitle != null && (
-          <h1 className="truncate text-lg font-medium text-foreground">
-            {pageTitle}
-          </h1>
-        )}
-      </div>
-      <div className="flex shrink-0 items-center gap-1">
-        <ThemeToggle />
-        <LanguageToggle />
-        <UserMenu />
+    <header className="shrink-0 border-b border-border bg-background">
+      <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-2 px-4 sm:px-6">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            aria-label={t("header.openMenu")}
+            className="shrink-0 md:hidden"
+          >
+            <MenuIcon className="size-5" />
+          </Button>
+          {pageTitle != null && (
+            <h1 className="truncate text-lg font-medium text-foreground">
+              {pageTitle}
+            </h1>
+          )}
+        </div>
+        <div className="flex shrink-0 items-center gap-1">
+          <ThemeToggle />
+          <LanguageToggle />
+          <UserMenu />
+        </div>
       </div>
     </header>
   );

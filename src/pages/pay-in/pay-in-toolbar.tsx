@@ -1,5 +1,6 @@
 import { FileDown, Plus, Search, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,9 +63,11 @@ export function PayInToolbar({
           <FileDown className="size-4" />
           {t("payIn.downloadExcel")}
         </Button>
-        <Button variant="outline" className="text-muted-foreground">
-          <Plus className="size-4" />
-          {t("payIn.create")}
+        <Button variant="outline" className="text-muted-foreground" asChild>
+          <Link to="/pay-in/create">
+            <Plus className="size-4" />
+            {t("payIn.create")}
+          </Link>
         </Button>
       </div>
     </div>
