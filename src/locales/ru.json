@@ -65,7 +65,8 @@
     "selectAll": "Выбрать все",
     "selectRow": "Выбрать строку",
     "selectedCount": "Выбрано: {{count}}",
-    "clearSelection": "Снять выбор"
+    "clearSelection": "Снять выбор",
+    "deleteSelected": "Удалить"
   },
   "header": {
     "openMenu": "Открыть меню",

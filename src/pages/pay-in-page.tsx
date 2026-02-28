@@ -7,7 +7,7 @@ import {
   type RowSelectionState,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Check, Copy, FileDown, Plus, Search } from "lucide-react";
+import { Check, Copy, FileDown, Plus, Search, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -222,18 +222,19 @@ export function PayInPage() {
               aria-label={t("payIn.search")}
             />
           </div>
-          {selectedRows.length > 0 && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
-              <span>{t("payIn.selectedCount", { count: selectedRows.length })}</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => table.toggleAllPageRowsSelected(false)}
-              >
-                {t("payIn.clearSelection")}
-              </Button>
-            </div>
-          )}
+          <Button
+            variant="outline"
+            className="h-9 text-muted-foreground"
+            disabled={selectedRows.length === 0}
+            onClick={() => {
+              /* TODO: connect to API - delete selectedRows */
+            }}
+          >
+            <Trash2 className="size-4" />
+            {selectedRows.length > 0
+              ? `${t("payIn.deleteSelected")} (${selectedRows.length})`
+              : t("payIn.deleteSelected")}
+          </Button>
         </div>
         <div className="flex shrink-0 gap-2">
           <Button variant="outline" className="text-muted-foreground">
