@@ -96,6 +96,9 @@ importers:
       globals:
         specifier: ^16.5.0
         version: 16.5.0
+      tailwind-animate:
+        specifier: ^0.2.10
+        version: 0.2.10
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
@@ -3091,6 +3094,9 @@ packages:
   tagged-tag@1.0.0:
     resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
     engines: {node: '>=20'}
+
+  tailwind-animate@0.2.10:
+    resolution: {integrity: sha512-9vczT78R9O7HIrydvGJNz4/19ogjSQSFlYpwleAxcxIT1m9pvAIGQr/+f6qG9sB5gq3JLB6IRKmw9RGJUrLeXQ==}
 
   tailwind-merge@3.5.0:
     resolution: {integrity: sha512-I8K9wewnVDkL1NTGoqWmVEIlUcB9gFriAEkXkfCjX5ib8ezGxtR3xD7iZIxrfArjEsH7F1CHD4RFUtxefdqV/A==}
@@ -6388,6 +6394,8 @@ snapshots:
   tabbable@6.4.0: {}
 
   tagged-tag@1.0.0: {}
+
+  tailwind-animate@0.2.10: {}
 
   tailwind-merge@3.5.0: {}
 

@@ -1,4 +1,7 @@
 import "./lib/globals"
+import { initTheme } from "./lib/theme-init"
+
+initTheme()
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { QueryClientProvider } from "@tanstack/react-query"

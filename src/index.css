@@ -74,6 +74,12 @@
     --sidebar-ring: oklch(0.556 0 0);
 }
 
+@keyframes sidebar-icon-jump {
+  0%, 100% { transform: scale(1) translateY(0); }
+  40% { transform: scale(1.15) translateY(-3px); }
+  70% { transform: scale(1.05) translateY(-1px); }
+}
+
 @theme inline {
     --font-sans: 'Inter Variable', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
@@ -126,4 +132,32 @@
   html {
     @apply font-sans;
     }
+
+  /* Global scrollbar – matches theme (border, muted) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 9999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--muted-foreground);
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 }
