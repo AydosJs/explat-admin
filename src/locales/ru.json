@@ -1,0 +1,46 @@
+{
+  "common": {
+    "close": "Закрыть",
+    "open": "Открыть",
+    "profile": "Профиль",
+    "logout": "Выйти",
+    "user": "Пользователь"
+  },
+  "sidebar": {
+    "appName": "Explat Admin",
+    "closeMenu": "Закрыть меню",
+    "expandMenu": "Развернуть меню",
+    "collapseMenu": "Свернуть меню",
+    "openMenu": "Открыть меню",
+    "dashboard": "Дашборд",
+    "payIn": "Pay in",
+    "payOut": "Pay out",
+    "merchants": "Мерчанты",
+    "traders": "Трейдеры",
+    "requisites": "Реквизиты",
+    "devices": "Устройства",
+    "appeals": "Апеляции",
+    "tokens": "Токены",
+    "tokensPayouts": "Токены для выплат",
+    "tokensBalance": "Токены пополнения баланса",
+    "tokensTraders": "Токены трейдеров",
+    "bankAndSms": "Банк и СМС",
+    "banks": "Банки",
+    "smsTemplates": "SMS шаблона",
+    "smsSenders": "SMS отправители",
+    "more": "Еще",
+    "balanceLogs": "Логи балансов",
+    "callbackLogs": "Логи Callback'ов",
+    "paymentReserve": "Резерв оплат"
+  },
+  "header": {
+    "openMenu": "Открыть меню",
+    "changeTheme": "Сменить тему",
+    "language": "Язык",
+    "userMenu": "Меню пользователя",
+    "themeLight": "Светлая",
+    "themeDark": "Тёмная",
+    "localeRu": "Русский",
+    "localeEn": "English"
+  }
+}

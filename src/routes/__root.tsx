@@ -1,15 +1,28 @@
+import { useEffect } from "react";
 import { Outlet } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 import { AppHeader } from "@/components/app-header";
 import { AppSidebar } from "@/components/app-sidebar";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { useAppStore } from "@/stores/use-app-store";
+import { useHeaderStore } from "@/stores/use-header-store";
 import { cn } from "@/lib/utils";
+import i18n from "@/i18n";
 
 export function RootComponent() {
+  const { t } = useTranslation();
   const isMobile = useIsMobile();
   const sidebarOpen = useAppStore((s) => s.sidebarOpen);
   const setSidebarOpen = useAppStore((s) => s.setSidebarOpen);
+
+  // Sync i18n language from stored locale on mount (e.g. from cookie)
+  useEffect(() => {
+    const locale = useHeaderStore.getState().locale;
+    if (i18n.language !== locale) {
+      void i18n.changeLanguage(locale);
+    }
+  }, []);
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
@@ -17,7 +30,7 @@ export function RootComponent() {
       {isMobile && (
         <button
           type="button"
-          aria-label="Закрыть меню"
+          aria-label={t("sidebar.closeMenu")}
           onClick={() => setSidebarOpen(false)}
           className={cn(
             "fixed inset-0 z-40 bg-black/50 transition-opacity duration-200 md:hidden",

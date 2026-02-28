@@ -1,5 +1,6 @@
 import "./lib/globals"
 import { initTheme } from "./lib/theme-init"
+import "./i18n"
 
 initTheme()
 import { StrictMode } from "react"

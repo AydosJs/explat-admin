@@ -24,20 +24,22 @@ import {
   LogOutIcon,
   MenuIcon,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/stores/use-app-store";
 
-const themeOptions: { value: Theme; label: string; icon: typeof SunIcon }[] = [
-  { value: "light", label: "Светлая", icon: SunIcon },
-  { value: "dark", label: "Тёмная", icon: MoonIcon },
+const themeOptions: { value: Theme; labelKey: string; icon: typeof SunIcon }[] = [
+  { value: "light", labelKey: "header.themeLight", icon: SunIcon },
+  { value: "dark", labelKey: "header.themeDark", icon: MoonIcon },
 ];
 
-const localeOptions: { value: Locale; label: string }[] = [
-  { value: "ru", label: "Русский" },
-  { value: "en", label: "English" },
+const localeOptions: { value: Locale; labelKey: string }[] = [
+  { value: "ru", labelKey: "header.localeRu" },
+  { value: "en", labelKey: "header.localeEn" },
 ];
 
 function ThemeToggle() {
+  const { t } = useTranslation();
   const { theme, setTheme } = useHeaderStore();
 
   return (
@@ -46,7 +48,7 @@ function ThemeToggle() {
         <Button variant="ghost" size="icon" className="size-9 shrink-0">
           <SunIcon className="size-4 dark:hidden" />
           <MoonIcon className="size-4 hidden dark:block" />
-          <span className="sr-only">Сменить тему</span>
+          <span className="sr-only">{t("header.changeTheme")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
@@ -54,7 +56,7 @@ function ThemeToggle() {
           {themeOptions.map((opt) => (
             <DropdownMenuRadioItem key={opt.value} value={opt.value}>
               <opt.icon className="size-4" />
-              {opt.label}
+              {t(opt.labelKey)}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>
@@ -64,6 +66,7 @@ function ThemeToggle() {
 }
 
 function LanguageToggle() {
+  const { t } = useTranslation();
   const { locale, setLocale } = useHeaderStore();
 
   return (
@@ -71,14 +74,14 @@ function LanguageToggle() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="size-9 shrink-0">
           <LanguagesIcon className="size-4" />
-          <span className="sr-only">Язык</span>
+          <span className="sr-only">{t("header.language")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-40">
         <DropdownMenuRadioGroup value={locale} onValueChange={(v) => setLocale(v as Locale)}>
           {localeOptions.map((opt) => (
             <DropdownMenuRadioItem key={opt.value} value={opt.value}>
-              {opt.label}
+              {t(opt.labelKey)}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>
@@ -88,21 +91,23 @@ function LanguageToggle() {
 }
 
 function UserMenu() {
+  const { t } = useTranslation();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative size-9 rounded-full p-0">
           <Avatar className="size-9">
-            <AvatarImage src="" alt="User" />
+            <AvatarImage src="" alt={t("common.user")} />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
-          <span className="sr-only">Меню пользователя</span>
+          <span className="sr-only">{t("header.userMenu")}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuLabel>
           <div className="flex flex-col">
-            <span>Пользователь</span>
+            <span>{t("common.user")}</span>
             <span className="text-muted-foreground text-xs font-normal">
               user@example.com
             </span>
@@ -112,13 +117,13 @@ function UserMenu() {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <UserIcon className="size-4" />
-            Профиль
+            {t("common.profile")}
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem variant="destructive">
           <LogOutIcon className="size-4" />
-          Выйти
+          {t("common.logout")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -126,6 +131,7 @@ function UserMenu() {
 }
 
 export function AppHeader() {
+  const { t } = useTranslation();
   const toggleSidebar = useAppStore((s) => s.toggleSidebar);
 
   return (
@@ -138,7 +144,7 @@ export function AppHeader() {
         variant="ghost"
         size="icon"
         onClick={toggleSidebar}
-        aria-label="Открыть меню"
+        aria-label={t("header.openMenu")}
         className="shrink-0 md:hidden"
       >
         <MenuIcon className="size-5" />

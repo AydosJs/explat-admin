@@ -27,43 +27,44 @@ export type SidebarMenuItemGroup = {
 
 export type SidebarMenuItem = SidebarMenuItemSingle | SidebarMenuItemGroup;
 
+/** Translation keys for sidebar labels (see locales/ru.json under "sidebar") */
 export const sidebarMenuItems: SidebarMenuItem[] = [
-  { type: "single", label: "Дашборд", to: "/", icon: "LayoutDashboard" },
-  { type: "single", label: "Pay in", to: "/pay-in", icon: "ArrowDownToLine" },
-  { type: "single", label: "Pay out", to: "/pay-out", icon: "ArrowUpFromLine" },
-  { type: "single", label: "Мерчанты", to: "/merchants", icon: "Store" },
-  { type: "single", label: "Трейдеры", to: "/traders", icon: "TrendingUp" },
-  { type: "single", label: "Реквизиты", to: "/requisites", icon: "FileText" },
-  { type: "single", label: "Устройства", to: "/devices", icon: "Smartphone" },
-  { type: "single", label: "Апеляции", to: "/appeals", icon: "MessageSquare" },
+  { type: "single", label: "sidebar.dashboard", to: "/", icon: "LayoutDashboard" },
+  { type: "single", label: "sidebar.payIn", to: "/pay-in", icon: "ArrowDownToLine" },
+  { type: "single", label: "sidebar.payOut", to: "/pay-out", icon: "ArrowUpFromLine" },
+  { type: "single", label: "sidebar.merchants", to: "/merchants", icon: "Store" },
+  { type: "single", label: "sidebar.traders", to: "/traders", icon: "TrendingUp" },
+  { type: "single", label: "sidebar.requisites", to: "/requisites", icon: "FileText" },
+  { type: "single", label: "sidebar.devices", to: "/devices", icon: "Smartphone" },
+  { type: "single", label: "sidebar.appeals", to: "/appeals", icon: "MessageSquare" },
   {
     type: "group",
-    title: "Токены",
+    title: "sidebar.tokens",
     icon: "Coins",
     items: [
-      { label: "Токены для выплат", to: "/tokens/payouts" },
-      { label: "Токены пополнения баланса", to: "/tokens/balance" },
-      { label: "Токены трейдеров", to: "/tokens/traders" },
+      { label: "sidebar.tokensPayouts", to: "/tokens/payouts" },
+      { label: "sidebar.tokensBalance", to: "/tokens/balance" },
+      { label: "sidebar.tokensTraders", to: "/tokens/traders" },
     ],
   },
   {
     type: "group",
-    title: "Банк и СМС",
+    title: "sidebar.bankAndSms",
     icon: "Building2",
     items: [
-      { label: "Банки", to: "/bank-sms/banks" },
-      { label: "SMS шаблона", to: "/bank-sms/sms-templates" },
-      { label: "SMS отправители", to: "/bank-sms/sms-senders" },
+      { label: "sidebar.banks", to: "/bank-sms/banks" },
+      { label: "sidebar.smsTemplates", to: "/bank-sms/sms-templates" },
+      { label: "sidebar.smsSenders", to: "/bank-sms/sms-senders" },
     ],
   },
   {
     type: "group",
-    title: "Еще",
+    title: "sidebar.more",
     icon: "MoreHorizontal",
     items: [
-      { label: "Логи балансов", to: "/more/balance-logs" },
-      { label: "Логи Callback'ов", to: "/more/callback-logs" },
-      { label: "Резерв оплат", to: "/more/payment-reserve" },
+      { label: "sidebar.balanceLogs", to: "/more/balance-logs" },
+      { label: "sidebar.callbackLogs", to: "/more/callback-logs" },
+      { label: "sidebar.paymentReserve", to: "/more/payment-reserve" },
     ],
   },
 ];

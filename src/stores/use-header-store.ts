@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import i18n from "i18next";
 import { cookies } from "@/lib/cookies";
 
 const THEME_KEY = "theme";
@@ -44,6 +45,7 @@ export const useHeaderStore = create<HeaderState>((set) => ({
     set({ theme });
   },
   setLocale: (locale) => {
+    void i18n.changeLanguage(locale);
     cookies.set(LOCALE_KEY, locale);
     set({ locale });
   },

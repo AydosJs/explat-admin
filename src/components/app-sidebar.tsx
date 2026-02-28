@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   ArrowDownToLine,
@@ -85,9 +86,11 @@ function NavLink({
   onSingleItemClick?: () => void;
   onNavigate?: () => void;
 }) {
+  const { t } = useTranslation();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActive = pathname === to || (to !== "/" && pathname.startsWith(to));
   const [clickKey, setClickKey] = useState(0);
+  const labelText = t(label);
 
   const handleClick = useCallback(() => {
     if (Icon) setClickKey((k) => k + 1);
@@ -100,7 +103,7 @@ function NavLink({
       <Link
         to={to}
         onClick={handleClick}
-        title={label}
+        title={labelText}
         className={cn(
           "flex items-center justify-center rounded-md p-2 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
           isActive && "bg-sidebar-accent text-sidebar-accent-foreground opacity-100",
@@ -137,7 +140,7 @@ function NavLink({
           <Icon className="size-4" />
         </span>
       ) : null}
-      {label}
+      {labelText}
     </Link>
   );
 }
@@ -183,6 +186,7 @@ const GroupItem = memo(function GroupItem({
   collapsed?: boolean;
   onNavigate?: () => void;
 }) {
+  const { t } = useTranslation();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActiveGroup =
     item.items.some(
@@ -207,7 +211,7 @@ const GroupItem = memo(function GroupItem({
             <Button
               variant="ghost"
               size="sm"
-              title={item.title}
+              title={t(item.title)}
               className={cn(
                 "flex w-full justify-center rounded-md p-2 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 isActiveGroup ? groupTriggerActive : groupTriggerInactive
@@ -229,7 +233,7 @@ const GroupItem = memo(function GroupItem({
                   to={sub.to}
                   className="flex cursor-pointer items-center gap-2"
                 >
-                  {sub.label}
+                  {t(sub.label)}
                 </Link>
               </DropdownMenuItem>
             ))}
@@ -258,7 +262,7 @@ const GroupItem = memo(function GroupItem({
               >
                 <GroupIcon className="size-4" />
               </span>
-              {item.title}
+              {t(item.title)}
             </span>
             <ChevronDownIcon className="size-4 shrink-0 transition-transform group-data-[state=open]/trigger:rotate-180" />
           </Button>
@@ -278,6 +282,7 @@ const GroupItem = memo(function GroupItem({
 });
 
 export function AppSidebar() {
+  const { t } = useTranslation();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isMobile = useIsMobile();
   const expanded = useAppStore((s) => s.sidebarOpen);
@@ -337,7 +342,7 @@ export function AppSidebar() {
         )}
       >
         {effectiveExpanded && (
-          <span className="truncate font-semibold">Explat Admin</span>
+          <span className="truncate font-semibold">{t("sidebar.appName")}</span>
         )}
         <Button
           variant="ghost"
@@ -345,10 +350,10 @@ export function AppSidebar() {
           onClick={isMobile ? closeSidebar : toggleSidebar}
           title={
             isMobile
-              ? "Закрыть меню"
+              ? t("sidebar.closeMenu")
               : effectiveExpanded
-                ? "Свернуть меню"
-                : "Развернуть меню"
+                ? t("sidebar.collapseMenu")
+                : t("sidebar.expandMenu")
           }
           className="shrink-0 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
         >
