@@ -10,6 +10,16 @@ import dayjs from "dayjs";
 import { Check, Copy, FileDown, Plus, Search, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -86,6 +96,7 @@ export function PayInPage() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [copiedUid, setCopiedUid] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const copyUid = (uid: string) => {
     void navigator.clipboard.writeText(uid).then(() => {
@@ -226,15 +237,43 @@ export function PayInPage() {
             variant="outline"
             className="h-9 text-muted-foreground"
             disabled={selectedRows.length === 0}
-            onClick={() => {
-              /* TODO: connect to API - delete selectedRows */
-            }}
+            onClick={() => setDeleteDialogOpen(true)}
           >
             <Trash2 className="size-4" />
             {selectedRows.length > 0
               ? `${t("payIn.deleteSelected")} (${selectedRows.length})`
               : t("payIn.deleteSelected")}
           </Button>
+          <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader className="text-center sm:place-items-center sm:text-center">
+                <AlertDialogTitle className="text-center text-xl w-full sm:text-center">
+                  {t("payIn.deleteConfirmTitle")}
+                </AlertDialogTitle>
+                <AlertDialogDescription className="text-center">
+                  {t("payIn.deleteConfirmDescription", {
+                    count: selectedRows.length,
+                  })}
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="flex w-full gap-2 sm:flex-row">
+                <AlertDialogCancel className="w-1/2">
+                  {t("payIn.deleteConfirmCancel")}
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  variant="destructive"
+                  className="w-1/2"
+                  onClick={() => {
+                    /* TODO: connect to API - delete selectedRows */
+                    setRowSelection({});
+                    setDeleteDialogOpen(false);
+                  }}
+                >
+                  {t("payIn.deleteConfirmAction")}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
         <div className="flex shrink-0 gap-2">
           <Button variant="outline" className="text-muted-foreground">
