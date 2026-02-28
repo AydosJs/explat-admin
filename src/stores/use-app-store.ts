@@ -1,14 +1,40 @@
 import { create } from "zustand";
 
+const SIDEBAR_STORAGE_KEY = "explat-sidebar-open";
+
+function getStoredSidebarOpen(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    const v = localStorage.getItem(SIDEBAR_STORAGE_KEY);
+    return v !== "false";
+  } catch {
+    return true;
+  }
+}
+
+function setStoredSidebarOpen(open: boolean) {
+  try {
+    localStorage.setItem(SIDEBAR_STORAGE_KEY, String(open));
+  } catch {}
+}
+
 interface AppState {
-  // Example state – replace or extend as needed
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  sidebarOpen: true,
-  setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  toggleSidebar: () => set((state) => ({ sidebarOpen: !state.sidebarOpen })),
+  sidebarOpen: getStoredSidebarOpen(),
+  setSidebarOpen: (open) => {
+    setStoredSidebarOpen(open);
+    set({ sidebarOpen: open });
+  },
+  toggleSidebar: () => {
+    set((state) => {
+      const next = !state.sidebarOpen;
+      setStoredSidebarOpen(next);
+      return { sidebarOpen: next };
+    });
+  },
 }));

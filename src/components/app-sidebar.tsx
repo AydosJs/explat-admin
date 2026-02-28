@@ -10,6 +10,8 @@ import {
   LayoutDashboard,
   MessageSquare,
   MoreHorizontal,
+  PanelLeft,
+  PanelLeftClose,
   Smartphone,
   Store,
   TrendingUp,
@@ -17,6 +19,12 @@ import {
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Collapsible,
   CollapsibleContent,
@@ -28,6 +36,7 @@ import {
   type SidebarMenuItemGroup,
   type SidebarMenuItemSingle,
 } from "@/config/sidebar-menu";
+import { useAppStore } from "@/stores/use-app-store";
 
 const SIDEBAR_ICONS: Record<SidebarMenuIcon, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
@@ -64,19 +73,55 @@ function NavLink({
   to,
   label,
   icon: Icon,
+  collapsed,
+  onSingleItemClick,
 }: {
   to: string;
   label: string;
   icon?: React.ComponentType<{ className?: string }>;
+  collapsed?: boolean;
+  onSingleItemClick?: () => void;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActive = pathname === to || (to !== "/" && pathname.startsWith(to));
   const [clickKey, setClickKey] = useState(0);
 
+  const handleClick = useCallback(() => {
+    if (Icon) setClickKey((k) => k + 1);
+    onSingleItemClick?.();
+  }, [Icon, onSingleItemClick]);
+
+  if (collapsed && Icon) {
+    return (
+      <Link
+        to={to}
+        onClick={handleClick}
+        title={label}
+        className={cn(
+          "flex items-center justify-center rounded-md p-2 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+          isActive && "bg-sidebar-accent text-sidebar-accent-foreground opacity-100",
+          !isActive && "opacity-70 hover:opacity-90"
+        )}
+        activeProps={{
+          className: cn(
+            "flex items-center justify-center rounded-md p-2 bg-sidebar-accent text-sidebar-accent-foreground opacity-100"
+          ),
+        }}
+      >
+        <span
+          key={clickKey}
+          className="inline-flex shrink-0 animate-[sidebar-icon-jump_0.35s_ease-out]"
+        >
+          <Icon className="size-4" />
+        </span>
+      </Link>
+    );
+  }
+
   return (
     <Link
       to={to}
-      onClick={() => Icon && setClickKey((k) => k + 1)}
+      onClick={handleClick}
       className={cn(linkBase, isActive ? linkActive : linkInactive)}
       activeProps={{ className: cn(linkBase, linkActive) }}
     >
@@ -93,11 +138,25 @@ function NavLink({
   );
 }
 
-function SingleItem({ item }: { item: SidebarMenuItemSingle }) {
+function SingleItem({
+  item,
+  collapsed,
+  onSingleItemClick,
+}: {
+  item: SidebarMenuItemSingle;
+  collapsed?: boolean;
+  onSingleItemClick?: () => void;
+}) {
   const Icon = SIDEBAR_ICONS[item.icon];
   return (
     <li>
-      <NavLink to={item.to} label={item.label} icon={Icon} />
+      <NavLink
+        to={item.to}
+        label={item.label}
+        icon={Icon}
+        collapsed={collapsed}
+        onSingleItemClick={onSingleItemClick}
+      />
     </li>
   );
 }
@@ -111,10 +170,12 @@ const GroupItem = memo(function GroupItem({
   item,
   open,
   onOpenChange: onOpenChangeProp,
+  collapsed,
 }: {
   item: SidebarMenuItemGroup;
   open: boolean;
   onOpenChange: (next: boolean, title: string) => void;
+  collapsed?: boolean;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActiveGroup =
@@ -131,6 +192,46 @@ const GroupItem = memo(function GroupItem({
     [item.title, onOpenChangeProp]
   );
   const GroupIcon = SIDEBAR_ICONS[item.icon];
+
+  if (collapsed) {
+    return (
+      <li>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              title={item.title}
+              className={cn(
+                "flex w-full justify-center rounded-md p-2 text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                isActiveGroup ? groupTriggerActive : groupTriggerInactive
+              )}
+              onClick={() => setIconKey((k) => k + 1)}
+            >
+              <span
+                key={iconKey}
+                className="inline-flex shrink-0 animate-[sidebar-icon-jump_0.35s_ease-out]"
+              >
+                <GroupIcon className="size-4" />
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="right" align="start" sideOffset={8}>
+            {item.items.map((sub) => (
+              <DropdownMenuItem key={sub.to} asChild>
+                <Link
+                  to={sub.to}
+                  className="flex cursor-pointer items-center gap-2"
+                >
+                  {sub.label}
+                </Link>
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </li>
+    );
+  }
 
   return (
     <li>
@@ -172,17 +273,21 @@ const GroupItem = memo(function GroupItem({
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const expanded = useAppStore((s) => s.sidebarOpen);
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar);
+  const collapsed = !expanded;
+
   const groupForPath = useMemo(() => getGroupTitleForPath(pathname), [pathname]);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [pathGroupClosed, setPathGroupClosed] = useState(false);
 
+  // When pathname changes, sync open group so only the group containing the current path stays open
   useEffect(() => {
-    const t = setTimeout(() => {
+    queueMicrotask(() => {
       setOpenGroup(groupForPath);
       setPathGroupClosed(false);
-    }, 0);
-    return () => clearTimeout(t);
-  }, [groupForPath]);
+    });
+  }, [pathname, groupForPath]);
 
   const isGroupOpen = useCallback(
     (title: string) =>
@@ -207,21 +312,50 @@ export function AppSidebar() {
   );
 
   return (
-    <aside className="flex h-full w-56 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
-      <div className="flex h-14 shrink-0 items-center border-b border-sidebar-border px-4">
-        <span className="font-semibold">Explat Admin</span>
+    <aside
+      className={cn(
+        "flex h-full flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-in-out",
+        expanded ? "w-56" : "w-14"
+      )}
+    >
+      <div
+        className={cn(
+          "flex h-14 shrink-0 items-center border-b border-sidebar-border",
+          expanded ? "justify-between px-3" : "justify-center px-0"
+        )}
+      >
+        {expanded && <span className="truncate font-semibold">Explat Admin</span>}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleSidebar}
+          title={expanded ? "Свернуть меню" : "Развернуть меню"}
+          className="shrink-0 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+        >
+          {expanded ? (
+            <PanelLeftClose className="size-4" />
+          ) : (
+            <PanelLeft className="size-4" />
+          )}
+        </Button>
       </div>
       <nav className="flex-1 overflow-y-auto p-2">
         <ul className="flex flex-col gap-0.5">
           {sidebarMenuItems.map((item) =>
             item.type === "single" ? (
-              <SingleItem key={item.to} item={item} />
+              <SingleItem
+                key={item.to}
+                item={item}
+                collapsed={collapsed}
+                onSingleItemClick={() => setOpenGroup(null)}
+              />
             ) : (
               <GroupItem
                 key={item.title}
                 item={item}
                 open={isGroupOpen(item.title)}
                 onOpenChange={handleGroupOpenChange}
+                collapsed={collapsed}
               />
             )
           )}
