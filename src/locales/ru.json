@@ -57,6 +57,7 @@
     "statusPending": "В ожидании",
     "statusFailed": "Ошибка",
     "noData": "Нет данных",
+    "search": "Поиск...",
     "create": "Создать",
     "downloadExcel": "Скачать Excel",
     "copyUid": "Копировать UID",

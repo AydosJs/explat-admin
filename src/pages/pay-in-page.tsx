@@ -7,12 +7,12 @@ import {
   type RowSelectionState,
 } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Check, Copy, FileDown, Plus } from "lucide-react";
+import { Check, Copy, FileDown, Plus, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -21,12 +21,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Link } from "@tanstack/react-router";
 
 export type PayInMethodStatus = "success" | "pending" | "failed";
 
 export interface PayInRow {
   uid: string;
   merchant: string;
+  merchantId: string;
   trader: string;
   requisite: string;
   method: PayInMethodStatus;
@@ -41,6 +43,7 @@ const mockData: PayInRow[] = [
   {
     uid: "a1b2c3d4",
     merchant: "Merchant One",
+    merchantId: "merchant-one",
     trader: "Trader Alpha",
     requisite: "4111 1111 1111 1111",
     method: "success",
@@ -53,6 +56,7 @@ const mockData: PayInRow[] = [
   {
     uid: "e5f6g7h8",
     merchant: "Merchant Two",
+    merchantId: "merchant-two",
     trader: "Trader Beta",
     requisite: "5500 0000 0000 0004",
     method: "pending",
@@ -65,6 +69,7 @@ const mockData: PayInRow[] = [
   {
     uid: "i9j0k1l2",
     merchant: "Merchant Three",
+    merchantId: "merchant-three",
     trader: "Trader Gamma",
     requisite: "3400 000000 00009",
     method: "failed",
@@ -80,6 +85,7 @@ export function PayInPage() {
   const { t } = useTranslation();
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [copiedUid, setCopiedUid] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   const copyUid = (uid: string) => {
     void navigator.clipboard.writeText(uid).then(() => {
@@ -149,39 +155,21 @@ export function PayInPage() {
           );
         },
       },
-      { accessorKey: "merchant", header: t("payIn.merchant") },
+      {
+        accessorKey: "merchant",
+        header: t("payIn.merchant"),
+        cell: ({ row }) => (
+          <Link
+            to="/merchants/$merchantId"
+            params={{ merchantId: row.original.merchantId }}
+            className="text-primary hover:underline"
+          >
+            {row.original.merchant}
+          </Link>
+        ),
+      },
       { accessorKey: "trader", header: t("payIn.trader") },
       { accessorKey: "requisite", header: t("payIn.requisite") },
-      {
-        accessorKey: "method",
-        header: t("payIn.method"),
-        cell: ({ row }) => {
-          const status = row.original.method;
-          const variant =
-            status === "success"
-              ? "default"
-              : status === "pending"
-                ? "secondary"
-                : "destructive";
-          const label =
-            status === "success"
-              ? t("payIn.statusSuccess")
-              : status === "pending"
-                ? t("payIn.statusPending")
-                : t("payIn.statusFailed");
-          const statusClass =
-            status === "success"
-              ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30"
-              : status === "pending"
-                ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30"
-                : undefined;
-          return (
-            <Badge variant={variant} className={statusClass}>
-              {label}
-            </Badge>
-          );
-        },
-      },
       { accessorKey: "device", header: t("payIn.device") },
       {
         id: "amount",
@@ -222,21 +210,32 @@ export function PayInPage() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        {selectedRows.length > 0 ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>{t("payIn.selectedCount", { count: selectedRows.length })}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => table.toggleAllPageRowsSelected(false)}
-            >
-              {t("payIn.clearSelection")}
-            </Button>
+        <div className="flex min-w-0 flex-1 items-center gap-2">
+          <div className="relative max-w-xs flex-1">
+            <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder={t("payIn.search")}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-8"
+              aria-label={t("payIn.search")}
+            />
           </div>
-        ) : (
-          <div />
-        )}
-        <div className="flex gap-2">
+          {selectedRows.length > 0 && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground shrink-0">
+              <span>{t("payIn.selectedCount", { count: selectedRows.length })}</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => table.toggleAllPageRowsSelected(false)}
+              >
+                {t("payIn.clearSelection")}
+              </Button>
+            </div>
+          )}
+        </div>
+        <div className="flex shrink-0 gap-2">
           <Button variant="outline" className="text-muted-foreground">
             <FileDown className="size-4" />
             {t("payIn.downloadExcel")}
@@ -265,21 +264,39 @@ export function PayInPage() {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() ? "selected" : undefined}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              table.getRowModel().rows.map((row) => {
+                const method = row.original.method;
+                const statusBarColor =
+                  method === "success"
+                    ? "bg-emerald-500/50"
+                    : method === "pending"
+                      ? "bg-amber-500/50"
+                      : "bg-red-500/50";
+                return (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() ? "selected" : undefined}
+                  >
+                    {row.getVisibleCells().map((cell, cellIndex) => (
+                      <TableCell
+                        key={cell.id}
+                        className={cellIndex === 0 ? "relative" : undefined}
+                      >
+                        {cellIndex === 0 && (
+                          <div
+                            className={`absolute left-0 top-0 bottom-0 w-1 ${statusBarColor}`}
+                            aria-hidden
+                          />
+                        )}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })
             ) : (
               <TableRow>
                 <TableCell
