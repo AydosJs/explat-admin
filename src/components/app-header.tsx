@@ -24,6 +24,7 @@ import {
   LogOutIcon,
   MenuIcon,
 } from "lucide-react";
+import { useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/stores/use-app-store";
@@ -130,9 +131,26 @@ function UserMenu() {
   );
 }
 
+const PATH_TO_TITLE_KEY: Record<string, string> = {
+  "/": "sidebar.dashboard",
+  "/pay-in": "sidebar.payIn",
+  "/pay-out": "sidebar.payOut",
+  "/merchants": "sidebar.merchants",
+  "/traders": "sidebar.traders",
+  "/requisites": "sidebar.requisites",
+  "/devices": "sidebar.devices",
+  "/appeals": "sidebar.appeals",
+};
+
 export function AppHeader() {
   const { t } = useTranslation();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const toggleSidebar = useAppStore((s) => s.toggleSidebar);
+  const pageTitle = PATH_TO_TITLE_KEY[pathname]
+    ? t(PATH_TO_TITLE_KEY[pathname])
+    : pathname === "/login"
+      ? null
+      : pathname.slice(1) || t("sidebar.dashboard");
 
   return (
     <header
@@ -140,16 +158,23 @@ export function AppHeader() {
         "flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-background px-3 sm:px-4"
       )}
     >
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={toggleSidebar}
-        aria-label={t("header.openMenu")}
-        className="shrink-0 md:hidden"
-      >
-        <MenuIcon className="size-5" />
-      </Button>
-      <div className="flex flex-1 justify-end items-center gap-1 min-w-0">
+      <div className="flex min-w-0 flex-1 items-center gap-2">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleSidebar}
+          aria-label={t("header.openMenu")}
+          className="shrink-0 md:hidden"
+        >
+          <MenuIcon className="size-5" />
+        </Button>
+        {pageTitle != null && (
+          <h1 className="truncate text-lg font-medium text-foreground">
+            {pageTitle}
+          </h1>
+        )}
+      </div>
+      <div className="flex shrink-0 items-center gap-1">
         <ThemeToggle />
         <LanguageToggle />
         <UserMenu />
