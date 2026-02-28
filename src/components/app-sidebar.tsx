@@ -36,6 +36,7 @@ import {
   type SidebarMenuItemGroup,
   type SidebarMenuItemSingle,
 } from "@/config/sidebar-menu";
+import { useIsMobile } from "@/hooks/use-media-query";
 import { useAppStore } from "@/stores/use-app-store";
 
 const SIDEBAR_ICONS: Record<SidebarMenuIcon, React.ComponentType<{ className?: string }>> = {
@@ -75,12 +76,14 @@ function NavLink({
   icon: Icon,
   collapsed,
   onSingleItemClick,
+  onNavigate,
 }: {
   to: string;
   label: string;
   icon?: React.ComponentType<{ className?: string }>;
   collapsed?: boolean;
   onSingleItemClick?: () => void;
+  onNavigate?: () => void;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActive = pathname === to || (to !== "/" && pathname.startsWith(to));
@@ -89,7 +92,8 @@ function NavLink({
   const handleClick = useCallback(() => {
     if (Icon) setClickKey((k) => k + 1);
     onSingleItemClick?.();
-  }, [Icon, onSingleItemClick]);
+    onNavigate?.();
+  }, [Icon, onSingleItemClick, onNavigate]);
 
   if (collapsed && Icon) {
     return (
@@ -171,11 +175,13 @@ const GroupItem = memo(function GroupItem({
   open,
   onOpenChange: onOpenChangeProp,
   collapsed,
+  onNavigate,
 }: {
   item: SidebarMenuItemGroup;
   open: boolean;
   onOpenChange: (next: boolean, title: string) => void;
   collapsed?: boolean;
+  onNavigate?: () => void;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isActiveGroup =
@@ -261,7 +267,7 @@ const GroupItem = memo(function GroupItem({
           <ul className="mt-1 flex flex-col gap-0.5 pl-2">
             {item.items.map((sub) => (
               <li key={sub.to}>
-                <NavLink to={sub.to} label={sub.label} />
+                <NavLink to={sub.to} label={sub.label} onNavigate={onNavigate} />
               </li>
             ))}
           </ul>
@@ -273,9 +279,14 @@ const GroupItem = memo(function GroupItem({
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isMobile = useIsMobile();
   const expanded = useAppStore((s) => s.sidebarOpen);
+  const setSidebarOpen = useAppStore((s) => s.setSidebarOpen);
   const toggleSidebar = useAppStore((s) => s.toggleSidebar);
-  const collapsed = !expanded;
+  // On mobile: drawer is always "expanded" (full menu); store controls open/closed
+  const effectiveExpanded = isMobile ? true : expanded;
+  const collapsed = !effectiveExpanded;
+  const closeSidebar = useCallback(() => setSidebarOpen(false), [setSidebarOpen]);
 
   const groupForPath = useMemo(() => getGroupTitleForPath(pathname), [pathname]);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -314,25 +325,34 @@ export function AppSidebar() {
   return (
     <aside
       className={cn(
-        "flex h-full flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-in-out",
-        expanded ? "w-56" : "w-14"
+        "flex h-full flex-col bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-in-out",
+        isMobile ? "w-full" : "border-r border-sidebar-border",
+        !isMobile && (effectiveExpanded ? "w-56" : "w-14")
       )}
     >
       <div
         className={cn(
           "flex h-14 shrink-0 items-center border-b border-sidebar-border",
-          expanded ? "justify-between px-3" : "justify-center px-0"
+          effectiveExpanded ? "justify-between px-3" : "justify-center px-0"
         )}
       >
-        {expanded && <span className="truncate font-semibold">Explat Admin</span>}
+        {effectiveExpanded && (
+          <span className="truncate font-semibold">Explat Admin</span>
+        )}
         <Button
           variant="ghost"
           size="icon"
-          onClick={toggleSidebar}
-          title={expanded ? "Свернуть меню" : "Развернуть меню"}
+          onClick={isMobile ? closeSidebar : toggleSidebar}
+          title={
+            isMobile
+              ? "Закрыть меню"
+              : effectiveExpanded
+                ? "Свернуть меню"
+                : "Развернуть меню"
+          }
           className="shrink-0 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
         >
-          {expanded ? (
+          {effectiveExpanded ? (
             <PanelLeftClose className="size-4" />
           ) : (
             <PanelLeft className="size-4" />
@@ -347,7 +367,10 @@ export function AppSidebar() {
                 key={item.to}
                 item={item}
                 collapsed={collapsed}
-                onSingleItemClick={() => setOpenGroup(null)}
+                onSingleItemClick={() => {
+                  setOpenGroup(null);
+                  if (isMobile) closeSidebar();
+                }}
               />
             ) : (
               <GroupItem
@@ -356,6 +379,7 @@ export function AppSidebar() {
                 open={isGroupOpen(item.title)}
                 onOpenChange={handleGroupOpenChange}
                 collapsed={collapsed}
+                onNavigate={isMobile ? closeSidebar : undefined}
               />
             )
           )}

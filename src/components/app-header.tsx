@@ -22,8 +22,10 @@ import {
   LanguagesIcon,
   UserIcon,
   LogOutIcon,
+  MenuIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAppStore } from "@/stores/use-app-store";
 
 const themeOptions: { value: Theme; label: string; icon: typeof SunIcon }[] = [
   { value: "light", label: "Светлая", icon: SunIcon },
@@ -124,13 +126,24 @@ function UserMenu() {
 }
 
 export function AppHeader() {
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar);
+
   return (
     <header
       className={cn(
-        "flex h-14 shrink-0 items-center justify-end gap-1 border-b border-border bg-background px-4"
+        "flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-background px-3 sm:px-4"
       )}
     >
-      <div className="flex items-center gap-1">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={toggleSidebar}
+        aria-label="Открыть меню"
+        className="shrink-0 md:hidden"
+      >
+        <MenuIcon className="size-5" />
+      </Button>
+      <div className="flex flex-1 justify-end items-center gap-1 min-w-0">
         <ThemeToggle />
         <LanguageToggle />
         <UserMenu />
