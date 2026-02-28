@@ -6,6 +6,14 @@
     "logout": "Выйти",
     "user": "Пользователь"
   },
+  "login": {
+    "title": "Вход",
+    "subtitle": "Войдите в панель администратора",
+    "email": "Email",
+    "password": "Пароль",
+    "submit": "Войти",
+    "submitting": "Вход..."
+  },
   "sidebar": {
     "appName": "Explat Admin",
     "closeMenu": "Закрыть меню",

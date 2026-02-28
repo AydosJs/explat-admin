@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { AppHeader } from "@/components/app-header";
@@ -12,6 +12,8 @@ import i18n from "@/i18n";
 
 export function RootComponent() {
   const { t } = useTranslation();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isLoginPage = pathname === "/login";
   const isMobile = useIsMobile();
   const sidebarOpen = useAppStore((s) => s.sidebarOpen);
   const setSidebarOpen = useAppStore((s) => s.setSidebarOpen);
@@ -23,6 +25,10 @@ export function RootComponent() {
       void i18n.changeLanguage(locale);
     }
   }, []);
+
+  if (isLoginPage) {
+    return <Outlet />;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
