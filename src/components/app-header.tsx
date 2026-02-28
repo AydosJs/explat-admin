@@ -26,7 +26,6 @@ import {
 } from "lucide-react";
 import { useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { cn } from "@/lib/utils";
 import { useAppStore } from "@/stores/use-app-store";
 
 const themeOptions: { value: Theme; labelKey: string; icon: typeof SunIcon }[] = [
@@ -134,6 +133,7 @@ function UserMenu() {
 const PATH_TO_TITLE_KEY: Record<string, string> = {
   "/": "sidebar.dashboard",
   "/pay-in": "sidebar.payIn",
+  "/pay-in/create": "payIn.addTransaction",
   "/pay-out": "sidebar.payOut",
   "/merchants": "sidebar.merchants",
   "/traders": "sidebar.traders",

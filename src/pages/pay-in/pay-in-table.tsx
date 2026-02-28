@@ -1,5 +1,6 @@
 import { flexRender } from "@tanstack/react-table";
 import type { Table as TanStackTable } from "@tanstack/react-table";
+import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -19,10 +20,11 @@ interface PayInTableProps {
 
 export function PayInTable({ table }: PayInTableProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const columns = table.getAllColumns();
 
   return (
-    <div className="rounded-md border border-border/50 bg-table">
+    <div className="rounded-md border border-border/50 bg-table dark:bg-table">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -52,6 +54,18 @@ export function PayInTable({ table }: PayInTableProps) {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() ? "selected" : undefined}
+                  className="cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() =>
+                    navigate({ to: "/pay-in/$payInId", params: { payInId: row.original.uid } })
+                  }
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      navigate({ to: "/pay-in/$payInId", params: { payInId: row.original.uid } });
+                    }
+                  }}
                 >
                   {row.getVisibleCells().map((cell, cellIndex) => (
                     <TableCell

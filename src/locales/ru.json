@@ -59,6 +59,7 @@
     "noData": "Нет данных",
     "search": "Поиск...",
     "create": "Создать",
+    "addTransaction": "Добавить Транзакция",
     "downloadExcel": "Скачать Excel",
     "copyUid": "Копировать UID",
     "copied": "Скопировано",
@@ -71,6 +72,23 @@
     "deleteConfirmDescription": "Вы удаляете {{count}} записей. Это действие нельзя отменить — после удаления восстановление невозможно.",
     "deleteConfirmCancel": "Отмена",
     "deleteConfirmAction": "Удалить"
+  },
+  "payInCreate": {
+    "mainInfo": "Основная информация",
+    "cardData": "Данные карты",
+    "name": "Имя",
+    "information": "Информация",
+    "amount": "Сумма",
+    "status": "Статус",
+    "merchant": "Мерчант",
+    "trader": "Трейдер",
+    "noResults": "Ничего не найдено",
+    "validation": {
+      "nameRequired": "Введите имя",
+      "amountRequired": "Введите сумму",
+      "amountPositive": "Сумма должна быть больше нуля",
+      "statusRequired": "Выберите статус"
+    }
   },
   "header": {
     "openMenu": "Открыть меню",
