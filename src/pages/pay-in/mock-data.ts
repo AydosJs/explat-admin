@@ -1,0 +1,43 @@
+import type { PayInRow } from "./types";
+
+export const mockPayInData: PayInRow[] = [
+  {
+    uid: "a1b2c3d4",
+    merchant: "Merchant One",
+    merchantId: "merchant-one",
+    trader: "Trader Alpha",
+    requisite: "4111 1111 1111 1111",
+    method: "success",
+    device: "iOS 17",
+    amountUsd: 150.5,
+    amountEur: 138.27,
+    card: "**** 4521",
+    createdAt: "2025-02-28T10:30:00Z",
+  },
+  {
+    uid: "e5f6g7h8",
+    merchant: "Merchant Two",
+    merchantId: "merchant-two",
+    trader: "Trader Beta",
+    requisite: "5500 0000 0000 0004",
+    method: "pending",
+    device: "Android 14",
+    amountUsd: 299.99,
+    amountEur: 276.18,
+    card: "**** 8832",
+    createdAt: "2025-02-28T09:15:00Z",
+  },
+  {
+    uid: "i9j0k1l2",
+    merchant: "Merchant Three",
+    merchantId: "merchant-three",
+    trader: "Trader Gamma",
+    requisite: "3400 000000 00009",
+    method: "failed",
+    device: "Web",
+    amountUsd: 75.0,
+    amountEur: 69.27,
+    card: "**** 1209",
+    createdAt: "2025-02-27T16:45:00Z",
+  },
+];
