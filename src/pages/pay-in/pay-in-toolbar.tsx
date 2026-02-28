@@ -27,49 +27,49 @@ export function PayInToolbar({
   const { t } = useTranslation();
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2">
-      <div className="flex min-w-0 flex-1 items-center gap-2">
-        <div className="relative max-w-xs flex-1">
-          <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            type="search"
-            placeholder={t("payIn.search")}
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-8"
-            aria-label={t("payIn.search")}
-          />
-        </div>
+    <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+      <div className="relative w-full min-w-0 sm:max-w-xs sm:flex-1">
+        <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <Input
+          type="search"
+          placeholder={t("payIn.search")}
+          value={search}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="pl-8"
+          aria-label={t("payIn.search")}
+        />
+      </div>
+      <div className="flex min-w-0 flex-wrap items-center gap-2 sm:shrink-0">
         <Button
           variant="outline"
-          className="h-9 text-muted-foreground"
+          className="h-9 shrink-0 text-muted-foreground"
           disabled={selectedCount === 0}
           onClick={() => onDeleteDialogOpenChange(true)}
         >
           <Trash2 className="size-4" />
-          {selectedCount > 0
-            ? `${t("payIn.deleteSelected")} (${selectedCount})`
-            : t("payIn.deleteSelected")}
+          <span className="whitespace-nowrap">
+            {selectedCount > 0
+              ? `${t("payIn.deleteSelected")} (${selectedCount})`
+              : t("payIn.deleteSelected")}
+          </span>
         </Button>
-        <DeleteConfirmDialog
-          open={deleteDialogOpen}
-          onOpenChange={onDeleteDialogOpenChange}
-          selectedCount={selectedCount}
-          onConfirm={onConfirmDelete}
-        />
-      </div>
-      <div className="flex shrink-0 gap-2">
-        <Button variant="outline" className="text-muted-foreground">
+        <Button variant="outline" className="shrink-0 text-muted-foreground">
           <FileDown className="size-4" />
-          {t("payIn.downloadExcel")}
+          <span className="whitespace-nowrap">{t("payIn.downloadExcel")}</span>
         </Button>
-        <Button variant="outline" className="text-muted-foreground" asChild>
+        <Button variant="outline" className="shrink-0 text-muted-foreground" asChild>
           <Link to="/pay-in/create">
             <Plus className="size-4" />
-            {t("payIn.create")}
+            <span className="whitespace-nowrap">{t("payIn.create")}</span>
           </Link>
         </Button>
       </div>
+      <DeleteConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={onDeleteDialogOpenChange}
+        selectedCount={selectedCount}
+        onConfirm={onConfirmDelete}
+      />
     </div>
   );
 }
