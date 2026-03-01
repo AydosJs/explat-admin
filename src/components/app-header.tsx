@@ -25,9 +25,11 @@ import {
   LogOutIcon,
   MenuIcon,
 } from "lucide-react";
-import { useRouterState } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/stores/use-app-store";
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { useState } from "react";
 
 const themeOptions: { value: Theme; labelKey: string; icon: typeof SunIcon }[] = [
   { value: "light", labelKey: "header.themeLight", icon: SunIcon },
@@ -99,51 +101,75 @@ const currentUser = {
 
 function UserMenu() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
+  const handleLogoutClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setLogoutDialogOpen(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    // TODO: replace with real auth logout (clear token, etc.)
+    navigate({ to: "/login" });
+  };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <div className="relative flex items-center gap-2 rounded-full  py-[2px] pl-[2px] pr-2 outline-none ring-0 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-0">
-          <div className="flex shrink-0 items-center justify-center">
-            <Avatar className="size-8">
-              <AvatarImage src="" alt={t("common.user")} />
-              <AvatarFallback>U</AvatarFallback>
-            </Avatar>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <div className="relative flex items-center gap-2 rounded-full  py-[2px] pl-[2px] pr-2 outline-none ring-0 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-0">
+            <div className="flex shrink-0 items-center justify-center">
+              <Avatar className="size-8">
+                <AvatarImage src="" alt={t("common.user")} />
+                <AvatarFallback>U</AvatarFallback>
+              </Avatar>
+            </div>
+            <div className="hidden flex-col items-start text-left sm:flex">
+              <span className="line-clamp-1 text-sm font-medium leading-tight text-foreground">
+                {currentUser.teamName}
+              </span>
+              <span className="line-clamp-1 text-xs leading-tight text-muted-foreground">
+                {currentUser.role}
+              </span>
+            </div>
+            <span className="sr-only">{t("header.userMenu")}</span>
           </div>
-          <div className="hidden flex-col items-start text-left sm:flex">
-            <span className="line-clamp-1 text-sm font-medium leading-tight text-foreground">
-              {currentUser.teamName}
-            </span>
-            <span className="line-clamp-1 text-xs leading-tight text-muted-foreground">
-              {currentUser.role}
-            </span>
-          </div>
-          <span className="sr-only">{t("header.userMenu")}</span>
-        </div>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-52">
-        <DropdownMenuLabel>
-          <div className="flex flex-col">
-            <span>{t("common.user")}</span>
-            <span className="text-muted-foreground text-xs font-normal">
-              user@example.com
-            </span>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <UserIcon className="size-4" />
-            {t("common.profile")}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-52">
+          <DropdownMenuLabel>
+            <div className="flex flex-col">
+              <span>{t("common.user")}</span>
+              <span className="text-muted-foreground text-xs font-normal">
+                user@example.com
+              </span>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <UserIcon className="size-4" />
+              {t("common.profile")}
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem variant="destructive" onClick={handleLogoutClick}>
+            <LogOutIcon className="size-4" />
+            {t("common.logout")}
           </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive">
-          <LogOutIcon className="size-4" />
-          {t("common.logout")}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ConfirmDialog
+        open={logoutDialogOpen}
+        onOpenChange={setLogoutDialogOpen}
+        title={t("common.logoutConfirmTitle")}
+        description={t("common.logoutConfirmDescription")}
+        cancelLabel={t("common.logoutConfirmCancel")}
+        confirmLabel={t("common.logoutConfirmAction")}
+        confirmVariant="destructive"
+        onConfirm={handleLogoutConfirm}
+      />
+    </>
   );
 }
 

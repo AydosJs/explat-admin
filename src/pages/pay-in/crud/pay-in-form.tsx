@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon } from "lucide-react";
 
 import {
   Card,
@@ -16,6 +17,7 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
   Combobox,
   ComboboxContent,
@@ -32,6 +34,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { AddMerchantDialog } from "@/pages/pay-in/crud/add-merchant-dialog";
 import {
   payInFormSchema,
   type PayInFormValues,
@@ -79,6 +82,7 @@ export interface PayInFormProps {
 
 export function PayInForm({ defaultValues, onSubmit }: PayInFormProps) {
   const { t } = useTranslation();
+  const [addMerchantDialogOpen, setAddMerchantDialogOpen] = useState(false);
 
   const form = useForm<PayInFormValues>({
     resolver: zodResolver(payInFormSchema),
@@ -137,35 +141,49 @@ export function PayInForm({ defaultValues, onSubmit }: PayInFormProps) {
           <Field data-invalid={!!errors.merchant}>
             <FieldLabel>{t("payInCreate.merchant")}</FieldLabel>
             <FieldContent>
-              <Controller
-                name="merchant"
-                control={control}
-                render={({ field }) => (
-                  <Combobox
-                    items={MERCHANT_OPTIONS}
-                    value={field.value}
-                    onValueChange={field.onChange}
-                  >
-                    <ComboboxInput
-                      className="w-full"
-                      placeholder={t("payInCreate.merchant")}
-                      aria-label={t("payInCreate.merchant")}
-                      showClear={!!field.value}
-                      aria-invalid={!!errors.merchant}
-                    />
-                    <ComboboxContent>
-                      <ComboboxEmpty>{t("payInCreate.noResults")}</ComboboxEmpty>
-                      <ComboboxList>
-                        {(item: Option) => (
-                          <ComboboxItem key={item.value} value={item}>
-                            {item.label}
-                          </ComboboxItem>
-                        )}
-                      </ComboboxList>
-                    </ComboboxContent>
-                  </Combobox>
-                )}
-              />
+              <div className="flex w-full gap-2">
+                <Controller
+                  name="merchant"
+                  control={control}
+                  render={({ field }) => (
+                    <div className="min-w-0 flex-1">
+                      <Combobox
+                        items={MERCHANT_OPTIONS}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <ComboboxInput
+                          className="w-full"
+                          placeholder={t("payInCreate.merchant")}
+                          aria-label={t("payInCreate.merchant")}
+                          showClear={!!field.value}
+                          aria-invalid={!!errors.merchant}
+                        />
+                        <ComboboxContent>
+                          <ComboboxEmpty>{t("payInCreate.noResults")}</ComboboxEmpty>
+                          <ComboboxList>
+                            {(item: Option) => (
+                              <ComboboxItem key={item.value} value={item}>
+                                {item.label}
+                              </ComboboxItem>
+                            )}
+                          </ComboboxList>
+                        </ComboboxContent>
+                      </Combobox>
+                    </div>
+                  )}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setAddMerchantDialogOpen(true)}
+                  aria-label={t("payInCreate.addMerchant")}
+                  className="shrink-0"
+                >
+                  <PlusIcon className="size-4" />
+                </Button>
+              </div>
               <FieldError
                 errors={
                   errors.merchant
@@ -280,6 +298,11 @@ export function PayInForm({ defaultValues, onSubmit }: PayInFormProps) {
           {/* Card data fields can be added here */}
         </CardContent>
       </Card>
+
+      <AddMerchantDialog
+        open={addMerchantDialogOpen}
+        onOpenChange={setAddMerchantDialogOpen}
+      />
     </form>
   );
 }

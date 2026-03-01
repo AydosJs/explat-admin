@@ -1,9 +1,14 @@
 {
   "common": {
     "close": "Закрыть",
+    "save": "Сохранить",
     "open": "Открыть",
     "profile": "Профиль",
     "logout": "Выйти",
+    "logoutConfirmTitle": "Выйти из аккаунта?",
+    "logoutConfirmDescription": "Вы уверены, что хотите выйти?",
+    "logoutConfirmCancel": "Отмена",
+    "logoutConfirmAction": "Выйти",
     "user": "Пользователь"
   },
   "login": {
@@ -81,6 +86,10 @@
     "amount": "Сумма",
     "status": "Статус",
     "merchant": "Мерчант",
+    "addMerchant": "Добавить мерчанта",
+    "addMerchantDialogTitle": "Добавить мерчанта",
+    "addMerchantTitle": "Название",
+    "addMerchantDescription": "Описание",
     "trader": "Трейдер",
     "noResults": "Ничего не найдено",
     "validation": {
