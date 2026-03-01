@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   useHeaderStore,
@@ -90,19 +91,35 @@ function LanguageToggle() {
   );
 }
 
+// TODO: replace with real user from auth/store when available
+const currentUser = {
+  teamName: "Support Team",
+  role: "Admin",
+};
+
 function UserMenu() {
   const { t } = useTranslation();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative size-9 rounded-full p-0">
-          <Avatar className="size-9">
-            <AvatarImage src="" alt={t("common.user")} />
-            <AvatarFallback>U</AvatarFallback>
-          </Avatar>
+        <div className="relative flex items-center gap-2 rounded-full  py-[2px] pl-[2px] pr-2 outline-none ring-0 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-0">
+          <div className="flex shrink-0 items-center justify-center">
+            <Avatar className="size-8">
+              <AvatarImage src="" alt={t("common.user")} />
+              <AvatarFallback>U</AvatarFallback>
+            </Avatar>
+          </div>
+          <div className="hidden flex-col items-start text-left sm:flex">
+            <span className="line-clamp-1 text-sm font-medium leading-tight text-foreground">
+              {currentUser.teamName}
+            </span>
+            <span className="line-clamp-1 text-xs leading-tight text-muted-foreground">
+              {currentUser.role}
+            </span>
+          </div>
           <span className="sr-only">{t("header.userMenu")}</span>
-        </Button>
+        </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-52">
         <DropdownMenuLabel>
@@ -173,7 +190,9 @@ export function AppHeader() {
         </div>
         <div className="flex shrink-0 items-center gap-1">
           <ThemeToggle />
+          <Separator orientation="vertical" className="h-9 shrink-0" />
           <LanguageToggle />
+          <Separator orientation="vertical" className="h-9 shrink-0" />
           <UserMenu />
         </div>
       </div>
