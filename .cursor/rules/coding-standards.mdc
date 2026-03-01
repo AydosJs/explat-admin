@@ -1,0 +1,71 @@
+---
+description: General coding standards and best practices — clean code, TypeScript, React
+alwaysApply: true
+---
+
+# Coding Standards and Best Practices
+
+Follow these when writing or reviewing code. They apply to all contributors and AI assistants.
+
+## Core principles
+
+- **Project is component-based**: Build the app from reusable components. Split UI and behaviour into small, focused components. Compose features from components; avoid large monolithic blocks.
+- **One function, one logic**: Each function must do exactly one thing. If a function handles more than one concern, split it into multiple functions or extract the extra logic. One function = one responsibility.
+- **Reuse before creating**: Before writing a new component, check if it already exists. Look in `src/components/` (including `ui/`) and in the same feature folder. Use or extend the existing component instead of duplicating.
+- **Prefer global components for shared use**: If a component will be used in two or more different pages (or in more than one place), create it as a global component in `src/components/` and import it where needed. Do not duplicate the same component in multiple page folders — extract it to a shared component once you use it in a second place.
+- **Match existing page patterns**: When writing a new page, look at similar pages first (e.g. in `src/pages/`) to see how they handle layout, spacing, cards, and styles. Follow the same patterns so the app stays consistent.
+- **Folder structure: one page, one folder**: Do not mix one page’s code with another. Keep each page in its own folder under `src/pages/<feature>/` and put that page’s components and models inside that folder (e.g. `components/`, `models/`, or colocated files). Shared/global components stay in `src/components/`. Do not put page-specific components or models in a global folder used by other pages.
+
+## Clean code
+
+- **Readable names**: Use clear, descriptive names for variables, functions, and components. Avoid abbreviations unless widely known (e.g. `id`, `url`).
+- **Single responsibility**: One function or component should do one thing. Split large components or long functions into smaller, focused pieces.
+- **Avoid duplication**: Extract repeated logic into shared functions, hooks, or components. Don’t copy-paste blocks; refactor instead.
+- **Keep files focused**: Prefer smaller files with a clear purpose. Colocate related code (e.g. form + schema, component + styles).
+- **Minimal comments**: Prefer self-explanatory code. Comment only when explaining *why*, not *what*.
+
+## TypeScript
+
+- **Strict typing**: Use proper types for props, state, and function arguments. Avoid `any`; use `unknown` and narrow if needed.
+- **Prefer interfaces for public shapes**: Use `interface` for object shapes that are part of the API or props. Use `type` for unions, tuples, or mapped types.
+- **Export only what’s needed**: Prefer named exports. Export types that other modules need; keep internal types private.
+
+## React
+
+- **Functional components**: Use function components and hooks only. No class components.
+- **Hooks in hook files**: When you write a custom hook, put it in a hook file (e.g. `src/hooks/` or a `hooks` file in the feature folder, e.g. `use-something.ts`) and import it in the page or component. Do not define custom hooks inline inside a page or component file.
+- **Hooks rules**: Call hooks at the top level (no hooks inside conditions or loops). Use dependency arrays correctly in `useEffect`, `useCallback`, `useMemo`.
+- **Controlled vs uncontrolled**: Prefer controlled inputs for forms (e.g. with `react-hook-form`). Use refs when uncontrolled is required (e.g. focus, scroll).
+- **Accessibility**: Use semantic HTML, `aria-*` where needed, and ensure interactive elements are keyboard-accessible. Prefer existing UI components that already handle a11y.
+
+## Forms
+
+- **Always use react-hook-form with zod**: All forms must use `react-hook-form` and a zod schema for validation. Define the schema in a separate file (e.g. `*-form-schema.ts`) and use `useForm` with `zodResolver`. See how existing pages do it (e.g. `src/pages/pay-in/crud/pay-in-form.tsx` and `pay-in-form-schema.ts`).
+- **Follow existing form patterns**: Before building a new form, look at similar pages and copy their structure (Controller, Field, FieldError, schema shape, submit handler).
+- **Always invalidate the list**: After a mutation that changes list data (create, update, delete), invalidate the relevant list query (e.g. `queryClient.invalidateQueries({ queryKey: [...] })`) so the list refetches and stays in sync. Do not leave the list stale after mutations.
+
+## Create and Edit: one form, two pages
+
+- **One shared form component**: Create a single form component (e.g. `pay-in-form.tsx`) that works for both create and edit. It receives `defaultValues` and `onSubmit`; it does not know whether it is creating or editing. All form fields and validation live in this one file.
+- **Two page files**: Use two separate pages — a **create page** and an **edit page** (e.g. `pay-in-create-page.tsx` and `pay-in-edit-page.tsx`). In the create page: pass empty/default `defaultValues`, and in `onSubmit` call the create API and handle redirect/invalidate. In the edit page: load the entity (e.g. by id), pass loaded data as `defaultValues`, and in `onSubmit` call the update API and handle redirect/invalidate. The form component is reused; only the page files manage create-specific or edit-specific logic.
+- **Reference**: See `src/pages/pay-in/crud/` — `pay-in-form.tsx` (shared), `pay-in-create-page.tsx` (create logic), `pay-in-edit-page.tsx` (edit logic).
+
+## UI and styling
+
+- **Use design tokens**: Use Tailwind/shadcn tokens (e.g. `text-foreground`, `bg-muted`) instead of raw colors so themes work.
+- **Consistent patterns**: Reuse existing components (`Button`, `Field`, `Dialog`, etc.) before adding new ones. Match existing patterns in the codebase.
+- **Mobile and themes**: When writing or changing UI, always consider (1) **mobile**: layout, touch targets, and responsive breakpoints (e.g. `sm:`, `md:`) so it works on small screens; (2) **light and dark themes**: use theme tokens (e.g. `bg-background`, `text-foreground`, `border-border`) so the design works in both light and dark mode. Avoid fixed colors or layouts that only work on desktop or one theme.
+
+## Tailwind: no hardcoded colors or sizes
+
+- **Do not hardcode** Tailwind colors or sizes. Do not use arbitrary values like `text-[#333]`, `bg-[#FAFAFA]`, `w-[13px]`, `rounded-[7px]`, or raw `px`/`rem` in class names. Use only theme tokens (e.g. `text-foreground`, `bg-muted`, `rounded-lg`, `size-4`, `p-2`).
+- **New values go in `src/index.css`**: When you need a color or size that the theme does not already provide:
+  1. Add the CSS variable in `:root` (and in `.dark` if it’s a color that changes in dark mode).
+  2. Expose it to Tailwind in the `@theme inline` block (e.g. `--color-*` for colors, `--spacing-*` or `--radius-*` for sizes) so you can use it as `bg-my-token`, `text-my-token`, `rounded-my-radius`, etc.
+- This keeps all design decisions in one place (`index.css`) and ensures dark mode and consistency.
+
+## General
+
+- **Fail fast**: Validate inputs and handle errors explicitly. Don’t swallow errors; log and/or show user feedback.
+- **No dead code**: Remove unused imports, components, and functions. Keep the codebase easy to navigate.
+- **Format and lint**: Follow the project’s ESLint and formatter settings. Fix lint errors before committing.

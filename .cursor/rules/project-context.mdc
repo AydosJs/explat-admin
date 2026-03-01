@@ -1,0 +1,46 @@
+---
+description: Project context and conventions — read first when working in this repo
+alwaysApply: true
+---
+
+# Explat Admin — Project Context
+
+**Read this first.** This repo is a React admin panel (Explat). It uses role-based sidebar visibility and CASL for permissions.
+
+## Stack
+
+- **React 19** + **TypeScript** + **Vite**
+- **TanStack Router** (file-based routes under `src/routes/`)
+- **Zustand** (`src/stores/`) for sidebar, header, and user role
+- **i18n**: `react-i18next`, locale in `src/locales/ru.json` and `useHeaderStore` for locale/theme
+- **UI**: shadcn-style components in `src/components/ui/`, layout in `app-sidebar.tsx` and `app-header.tsx`
+- **Forms**: `react-hook-form` + `zod` (e.g. `pay-in-form-schema.ts`). After create/update/delete mutations, invalidate the list query so the list refetches.
+
+## Roles and sidebar
+
+- **Roles** (see `ADMIN_SIDEBAR_AND_ROLES.md`): `admin` | `trader` | `merchant`
+- **Current role**: `useUserStore` → `role` and `setRole`. Header user menu has a “Role (testing)” switcher.
+- **Sidebar visibility**: driven by **CASL** in `src/lib/ability.ts`. `createAbilityFor(role)` returns an ability; sidebar uses `ability.can('view', path)`.
+- **Menu config**: `src/config/sidebar-menu.ts` — `sidebarMenuItems` (paths only). Filtering by role is done via `getSidebarMenuItemsForRole(role)` using the ability.
+- **Adding a sidebar item**: add the item in `sidebar-menu.ts` and add the path to `ROLE_PATHS` in `src/lib/ability.ts` for each role that should see it.
+
+## Conventions
+
+- **Folder structure**: Each page/feature has its own folder under `src/pages/<feature>/`. Put that page’s components and models inside that folder (e.g. `pay-in/crud/`, `pay-in/models/`). Shared UI and app shell live in `src/components/`. Do not mix one page’s components or models with another page’s.
+- **Modals**: Use `ConfirmDialog` (`src/components/confirm-dialog.tsx`) for confirm/cancel flows; use `Dialog` from `src/components/ui/dialog.tsx` for generic modals (e.g. add-merchant).
+- **New pages**: Add route under `src/routes/`, page under `src/pages/<feature>/`, and sidebar entry + ability path as above. Create a folder for the feature and keep its components and models inside it.
+- **Create vs Edit**: Use one shared form component for both create and edit; use two page files (create page and edit page) that pass `defaultValues` and `onSubmit` to the form. Create page handles create API and redirect; edit page loads data and handles update API and redirect. See `src/pages/pay-in/crud/`.
+- **Translations**: Add keys to `src/locales/ru.json` (and any other locale files). Use `t('key')` via `useTranslation()`.
+
+## Key files
+
+| Purpose | Path |
+|--------|------|
+| Role-based abilities | `src/lib/ability.ts` |
+| Sidebar menu structure | `src/config/sidebar-menu.ts` |
+| Role store | `src/stores/use-user-store.ts` |
+| Sidebar + filtering | `src/components/app-sidebar.tsx` |
+| Header + role switcher | `src/components/app-header.tsx` |
+| Role/sidebar spec | `ADMIN_SIDEBAR_AND_ROLES.md` |
+
+When changing sidebar visibility or adding features that depend on role, read `ADMIN_SIDEBAR_AND_ROLES.md` and keep `ability.ts` and `sidebar-menu.ts` in sync.
