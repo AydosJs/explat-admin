@@ -343,13 +343,13 @@ export function AppSidebar() {
     <aside
       className={cn(
         "flex h-full flex-col bg-sidebar text-sidebar-foreground transition-[width] duration-200 ease-in-out",
-        isMobile ? "w-full" : "border-r border-sidebar-border",
+        isMobile ? "w-full" : " border-sidebar-border",
         !isMobile && (effectiveExpanded ? "w-56" : "w-14")
       )}
     >
       <div
         className={cn(
-          "flex h-14 shrink-0 items-center border-b border-sidebar-border",
+          "flex h-14 shrink-0 items-center border-b border-sidebar-border mt-px",
           effectiveExpanded ? "justify-between px-3" : "justify-center px-0"
         )}
       >

@@ -127,18 +127,16 @@ function UserMenu() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="relative flex items-center gap-2 rounded-full  py-[2px] pl-[2px] pr-2 outline-none ring-0 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-0">
-            <div className="flex shrink-0 items-center justify-center">
-              <Avatar className="size-8">
-                <AvatarImage src="" alt={t("common.user")} />
-                <AvatarFallback>U</AvatarFallback>
-              </Avatar>
-            </div>
-            <div className="hidden flex-col items-start text-left sm:flex">
-              <span className="line-clamp-1 text-sm font-medium leading-tight text-foreground">
+          <div className="relative flex items-center gap-2 rounded-full outline-none ring-0 hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-0 sm:py-[2px] sm:pl-[2px] sm:pr-2">
+            <Avatar className="size-8 shrink-0">
+              <AvatarImage src="" alt={t("common.user")} />
+              <AvatarFallback>U</AvatarFallback>
+            </Avatar>
+            <div className="hidden min-w-0 flex-col items-start text-left sm:flex">
+              <span className="line-clamp-1 truncate text-sm font-medium leading-tight text-foreground">
                 {currentUser.teamName}
               </span>
-              <span className="line-clamp-1 text-xs leading-tight text-muted-foreground">
+              <span className="line-clamp-1 truncate text-xs leading-tight text-muted-foreground">
                 {currentUser.role}
               </span>
             </div>

@@ -1,4 +1,4 @@
-import { AbilityBuilder, PureAbility } from "@casl/ability";
+import { defineAbility } from "@casl/ability";
 
 /** Sidebar visibility: user can "view" a menu item (by path). */
 export type SidebarAction = "view";
@@ -56,9 +56,9 @@ const ROLE_PATHS: Record<
  */
 export function createAbilityFor(role: "admin" | "trader" | "merchant") {
   const paths = ROLE_PATHS[role];
-  const { can, build } = new AbilityBuilder(PureAbility);
-  for (const path of paths) {
-    can("view", path);
-  }
-  return build();
+  return defineAbility((can) => {
+    for (const path of paths) {
+      can("view", path);
+    }
+  });
 }
