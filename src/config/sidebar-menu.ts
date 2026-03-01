@@ -1,3 +1,6 @@
+import type { UserRole } from "@/stores/use-user-store";
+import { createAbilityFor } from "@/lib/ability";
+
 export type SidebarMenuIcon =
   | "LayoutDashboard"
   | "ArrowDownToLine"
@@ -68,3 +71,23 @@ export const sidebarMenuItems: SidebarMenuItem[] = [
     ],
   },
 ];
+
+/**
+ * Returns sidebar items visible for the given role using CASL abilities.
+ * Uses ability.can('view', path) so permissions stay in @/lib/ability.
+ */
+export function getSidebarMenuItemsForRole(role: UserRole): SidebarMenuItem[] {
+  const ability = createAbilityFor(role);
+  return sidebarMenuItems
+    .map((item): SidebarMenuItem | null => {
+      if (item.type === "single") {
+        return ability.can("view", item.to) ? item : null;
+      }
+      const visibleSubItems = item.items.filter((sub) =>
+        ability.can("view", sub.to)
+      );
+      if (visibleSubItems.length === 0) return null;
+      return { ...item, items: visibleSubItems };
+    })
+    .filter((item): item is SidebarMenuItem => item !== null);
+}

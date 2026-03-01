@@ -32,13 +32,14 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  sidebarMenuItems,
+  getSidebarMenuItemsForRole,
   type SidebarMenuIcon,
   type SidebarMenuItemGroup,
   type SidebarMenuItemSingle,
 } from "@/config/sidebar-menu";
 import { useIsMobile } from "@/hooks/use-media-query";
 import { useAppStore } from "@/stores/use-app-store";
+import { useUserStore } from "@/stores/use-user-store";
 
 const SIDEBAR_ICONS: Record<SidebarMenuIcon, React.ComponentType<{ className?: string }>> = {
   LayoutDashboard,
@@ -54,8 +55,11 @@ const SIDEBAR_ICONS: Record<SidebarMenuIcon, React.ComponentType<{ className?: s
   MoreHorizontal,
 };
 
-function getGroupTitleForPath(pathname: string): string | null {
-  for (const item of sidebarMenuItems) {
+function getGroupTitleForPath(
+  pathname: string,
+  items: Array<SidebarMenuItemSingle | SidebarMenuItemGroup>
+): string | null {
+  for (const item of items) {
     if (item.type !== "group") continue;
     for (const sub of item.items) {
       if (pathname === sub.to || pathname.startsWith(sub.to + "/")) {
@@ -284,6 +288,11 @@ const GroupItem = memo(function GroupItem({
 export function AppSidebar() {
   const { t } = useTranslation();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const role = useUserStore((s) => s.role);
+  const visibleMenuItems = useMemo(
+    () => getSidebarMenuItemsForRole(role),
+    [role]
+  );
   const isMobile = useIsMobile();
   const expanded = useAppStore((s) => s.sidebarOpen);
   const setSidebarOpen = useAppStore((s) => s.setSidebarOpen);
@@ -293,7 +302,10 @@ export function AppSidebar() {
   const collapsed = !effectiveExpanded;
   const closeSidebar = useCallback(() => setSidebarOpen(false), [setSidebarOpen]);
 
-  const groupForPath = useMemo(() => getGroupTitleForPath(pathname), [pathname]);
+  const groupForPath = useMemo(
+    () => getGroupTitleForPath(pathname, visibleMenuItems),
+    [pathname, visibleMenuItems]
+  );
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [pathGroupClosed, setPathGroupClosed] = useState(false);
 
@@ -366,7 +378,7 @@ export function AppSidebar() {
       </div>
       <nav className="flex-1 overflow-y-auto p-2">
         <ul className="flex flex-col gap-0.5">
-          {sidebarMenuItems.map((item) =>
+          {visibleMenuItems.map((item) =>
             item.type === "single" ? (
               <SingleItem
                 key={item.to}

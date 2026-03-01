@@ -28,6 +28,7 @@ import {
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useAppStore } from "@/stores/use-app-store";
+import { useUserStore, type UserRole } from "@/stores/use-user-store";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useState } from "react";
 
@@ -99,9 +100,17 @@ const currentUser = {
   role: "Admin",
 };
 
+const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
+  { value: "admin", label: "Admin" },
+  { value: "trader", label: "Trader" },
+  { value: "merchant", label: "Merchant" },
+];
+
 function UserMenu() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const role = useUserStore((s) => s.role);
+  const setRole = useUserStore((s) => s.setRole);
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
   const handleLogoutClick = (e: React.MouseEvent) => {
@@ -145,6 +154,19 @@ function UserMenu() {
               </span>
             </div>
           </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuLabel className="text-muted-foreground text-xs font-normal">
+              Role (testing)
+            </DropdownMenuLabel>
+            <DropdownMenuRadioGroup value={role} onValueChange={(v) => setRole(v as UserRole)}>
+              {ROLE_OPTIONS.map((opt) => (
+                <DropdownMenuRadioItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
