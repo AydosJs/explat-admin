@@ -1,6 +1,5 @@
 import { flexRender } from "@tanstack/react-table";
 import type { Table as TanStackTable } from "@tanstack/react-table";
-import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import {
@@ -13,15 +12,14 @@ import {
 } from "@/components/ui/table";
 import { TableStatusLegend } from "@/components/table-status-legend";
 
-import type { PayInRow } from "./types";
+import type { PayOutRow } from "./types";
 
-interface PayInTableProps {
-  table: TanStackTable<PayInRow>;
+interface PayOutTableProps {
+  table: TanStackTable<PayOutRow>;
 }
 
-export function PayInTable({ table }: PayInTableProps) {
+export function PayOutTable({ table }: PayOutTableProps) {
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const columns = table.getAllColumns();
 
   return (
@@ -44,11 +42,11 @@ export function PayInTable({ table }: PayInTableProps) {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => {
-              const method = row.original.method;
+              const status = row.original.status;
               const statusBarColor =
-                method === "success"
+                status === "success"
                   ? "bg-emerald-500/50"
-                  : method === "pending"
+                  : status === "pending"
                     ? "bg-amber-500/50"
                     : "bg-red-500/50";
               return (
@@ -56,17 +54,6 @@ export function PayInTable({ table }: PayInTableProps) {
                   key={row.id}
                   data-state={row.getIsSelected() ? "selected" : undefined}
                   className="cursor-pointer"
-                  role="button"
-                  tabIndex={0}
-                  onClick={() =>
-                    navigate({ to: "/pay-in/$payInId", params: { payInId: row.original.uid } })
-                  }
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      navigate({ to: "/pay-in/$payInId", params: { payInId: row.original.uid } });
-                    }
-                  }}
                 >
                   {row.getVisibleCells().map((cell, cellIndex) => (
                     <TableCell
@@ -94,7 +81,7 @@ export function PayInTable({ table }: PayInTableProps) {
                 colSpan={columns.length}
                 className="h-24 text-center text-muted-foreground"
               >
-                {t("payIn.noData")}
+                {t("payOut.noData")}
               </TableCell>
             </TableRow>
           )}
@@ -102,11 +89,11 @@ export function PayInTable({ table }: PayInTableProps) {
       </Table>
       <TableStatusLegend
         items={[
-          { dotClassName: "bg-emerald-500/50", label: t("payIn.statusSuccess") },
-          { dotClassName: "bg-amber-500/50", label: t("payIn.statusPending") },
-          { dotClassName: "bg-red-500/50", label: t("payIn.statusFailed") },
+          { dotClassName: "bg-emerald-500/50", label: t("payOut.statusSuccess") },
+          { dotClassName: "bg-amber-500/50", label: t("payOut.statusPending") },
+          { dotClassName: "bg-red-500/50", label: t("payOut.statusFailed") },
         ]}
-        ariaLabel={t("payIn.statusLegend")}
+        ariaLabel={t("payOut.statusLegend")}
       />
     </div>
   );

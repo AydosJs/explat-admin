@@ -13,13 +13,13 @@ import {
 } from "@/components/ui/table";
 import { TableStatusLegend } from "@/components/table-status-legend";
 
-import type { PayInRow } from "./types";
+import type { MerchantRow } from "./types";
 
-interface PayInTableProps {
-  table: TanStackTable<PayInRow>;
+interface MerchantsTableProps {
+  table: TanStackTable<MerchantRow>;
 }
 
-export function PayInTable({ table }: PayInTableProps) {
+export function MerchantsTable({ table }: MerchantsTableProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const columns = table.getAllColumns();
@@ -44,13 +44,11 @@ export function PayInTable({ table }: PayInTableProps) {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => {
-              const method = row.original.method;
+              const status = row.original.status;
               const statusBarColor =
-                method === "success"
+                status === "active"
                   ? "bg-emerald-500/50"
-                  : method === "pending"
-                    ? "bg-amber-500/50"
-                    : "bg-red-500/50";
+                  : "bg-muted-foreground/50";
               return (
                 <TableRow
                   key={row.id}
@@ -59,12 +57,18 @@ export function PayInTable({ table }: PayInTableProps) {
                   role="button"
                   tabIndex={0}
                   onClick={() =>
-                    navigate({ to: "/pay-in/$payInId", params: { payInId: row.original.uid } })
+                    navigate({
+                      to: "/merchants/$merchantId",
+                      params: { merchantId: row.original.id },
+                    })
                   }
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      navigate({ to: "/pay-in/$payInId", params: { payInId: row.original.uid } });
+                      navigate({
+                        to: "/merchants/$merchantId",
+                        params: { merchantId: row.original.id },
+                      });
                     }
                   }}
                 >
@@ -94,7 +98,7 @@ export function PayInTable({ table }: PayInTableProps) {
                 colSpan={columns.length}
                 className="h-24 text-center text-muted-foreground"
               >
-                {t("payIn.noData")}
+                {t("merchants.noData")}
               </TableCell>
             </TableRow>
           )}
@@ -102,11 +106,13 @@ export function PayInTable({ table }: PayInTableProps) {
       </Table>
       <TableStatusLegend
         items={[
-          { dotClassName: "bg-emerald-500/50", label: t("payIn.statusSuccess") },
-          { dotClassName: "bg-amber-500/50", label: t("payIn.statusPending") },
-          { dotClassName: "bg-red-500/50", label: t("payIn.statusFailed") },
+          { dotClassName: "bg-emerald-500/50", label: t("merchants.statusActive") },
+          {
+            dotClassName: "bg-muted-foreground/50",
+            label: t("merchants.statusInactive"),
+          },
         ]}
-        ariaLabel={t("payIn.statusLegend")}
+        ariaLabel={t("merchants.statusLegend")}
       />
     </div>
   );

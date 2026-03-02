@@ -203,6 +203,8 @@ const PATH_TO_TITLE_KEY: Record<string, string> = {
   "/requisites": "sidebar.requisites",
   "/devices": "sidebar.devices",
   "/appeals": "sidebar.appeals",
+  "/tokens/payouts": "sidebar.tokensPayouts",
+  "/tokens/balance": "sidebar.tokensBalance",
 };
 
 export function AppHeader() {

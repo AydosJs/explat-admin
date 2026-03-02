@@ -1,10 +1,8 @@
 import { useMemo } from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
-import { Check, Copy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "@tanstack/react-router";
 
@@ -44,35 +42,6 @@ export function usePayInColumns(copiedUid: string | null, copyUid: (uid: string)
         id: "index",
         header: t("payIn.index"),
         cell: ({ row }) => row.index + 1,
-      },
-      {
-        accessorKey: "uid",
-        header: t("payIn.uid"),
-        cell: ({ row }) => {
-          const uid = row.original.uid;
-          const isCopied = copiedUid === uid;
-          return (
-            <div className="flex items-center gap-1.5">
-              <span className="font-mono text-sm">{uid}</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-7 shrink-0 opacity-70 hover:opacity-100"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  copyUid(uid);
-                }}
-                aria-label={isCopied ? t("payIn.copied") : t("payIn.copyUid")}
-              >
-                {isCopied ? (
-                  <Check className="size-3.5 text-emerald-600 dark:text-emerald-400" />
-                ) : (
-                  <Copy className="size-3.5" />
-                )}
-              </Button>
-            </div>
-          );
-        },
       },
       {
         accessorKey: "merchant",
