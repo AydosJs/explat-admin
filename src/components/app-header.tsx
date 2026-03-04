@@ -23,11 +23,10 @@ import {
   LanguagesIcon,
   UserIcon,
   LogOutIcon,
-  MenuIcon,
 } from "lucide-react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useAppStore } from "@/stores/use-app-store";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useUserStore, type UserRole } from "@/stores/use-user-store";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useState } from "react";
@@ -210,7 +209,6 @@ const PATH_TO_TITLE_KEY: Record<string, string> = {
 export function AppHeader() {
   const { t } = useTranslation();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const toggleSidebar = useAppStore((s) => s.toggleSidebar);
   const pageTitle = PATH_TO_TITLE_KEY[pathname]
     ? t(PATH_TO_TITLE_KEY[pathname])
     : pathname === "/login"
@@ -219,17 +217,9 @@ export function AppHeader() {
 
   return (
     <header className="shrink-0 border-b border-border bg-background">
-      <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-2 px-4 sm:px-6">
+      <div className="mx-auto flex w-full max-w-7xl h-[55px] items-center justify-between gap-2 px-4 sm:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleSidebar}
-            aria-label={t("header.openMenu")}
-            className="shrink-0 md:hidden"
-          >
-            <MenuIcon className="size-5" />
-          </Button>
+          <SidebarTrigger aria-label={t("header.openMenu")} className="shrink-0 md:hidden" />
           {pageTitle != null && (
             <h1 className="truncate text-lg font-medium text-foreground">
               {pageTitle}
