@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   useHeaderStore,
@@ -248,9 +247,9 @@ export function AppHeader() {
         </div>
         <div className="flex shrink-0 items-center gap-1">
           <ThemeToggle />
-          <Separator orientation="vertical" className="h-9 shrink-0" />
+          {/* <Separator orientation="vertical" className="h-9 shrink-0" /> */}
           <LanguageToggle />
-          <Separator orientation="vertical" className="h-9 shrink-0" />
+          {/* <Separator orientation="vertical" className="h-9 shrink-0" /> */}
           <UserMenu />
         </div>
       </div>
