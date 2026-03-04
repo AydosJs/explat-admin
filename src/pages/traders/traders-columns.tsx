@@ -154,7 +154,8 @@ export function useTradersColumns() {
       },
       {
         accessorKey: "isActive",
-        header: t("traders.isActive"),
+        meta: { className: "text-center" },
+        header: () => <div className="text-center">{t("traders.isActive")}</div>,
         cell: ({ row }) => {
           const isActive = row.original.isActive;
           return (

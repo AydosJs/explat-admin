@@ -1,5 +1,6 @@
-import { FileDown, Search } from "lucide-react";
+import { FileDown, Plus, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Link } from "@tanstack/react-router";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,6 +33,12 @@ export function PayOutToolbar({
         <Button variant="outline" className="shrink-0 text-muted-foreground">
           <FileDown className="size-4" />
           <span className="whitespace-nowrap">{t("payOut.downloadExcel")}</span>
+        </Button>
+        <Button variant="outline" className="shrink-0 text-muted-foreground" asChild>
+          <Link to="/pay-out/create">
+            <Plus className="size-4" />
+            <span className="whitespace-nowrap">{t("common.create")}</span>
+          </Link>
         </Button>
       </div>
     </div>

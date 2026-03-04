@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TableStatusLegend } from "@/components/table-status-legend";
+import { TableFooter } from "@/components/table-footer";
 
 import type { DeviceRow } from "./types";
 
@@ -83,15 +83,18 @@ export function DevicesTable({ table }: DevicesTableProps) {
           )}
         </TableBody>
       </Table>
-      <TableStatusLegend
-        items={[
-          { dotClassName: "bg-emerald-500/50", label: t("devices.isActive") },
-          {
-            dotClassName: "bg-destructive/50",
-            label: t("devices.statusInactive"),
-          },
-        ]}
-        ariaLabel={t("devices.statusLegend")}
+      <TableFooter
+        table={table}
+        statusLegend={{
+          items: [
+            { dotClassName: "bg-emerald-500/50", label: t("devices.isActive") },
+            {
+              dotClassName: "bg-destructive/50",
+              label: t("devices.statusInactive"),
+            },
+          ],
+          ariaLabel: t("devices.statusLegend"),
+        }}
       />
     </div>
   );

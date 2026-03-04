@@ -1,0 +1,48 @@
+import type { BalanceLogRow } from "./types";
+
+export const mockBalanceLogsData: BalanceLogRow[] = [
+  {
+    id: "bl-001",
+    traderName: "Трейдер 1",
+    traderId: "trader-001",
+    amount: 150.5,
+    type: "Пополнение",
+    method: "Карта",
+    reason: "Pay In",
+    transaction: "TXN-2025-001",
+    createdAt: "2025-03-02T10:00:00Z",
+  },
+  {
+    id: "bl-002",
+    traderName: "Трейдер 2",
+    traderId: "trader-002",
+    amount: -50.0,
+    type: "Списание",
+    method: "Крипто",
+    reason: "Pay Out",
+    transaction: "TXN-2025-002",
+    createdAt: "2025-03-02T09:30:00Z",
+  },
+  {
+    id: "bl-003",
+    traderName: "Трейдер 3",
+    traderId: "trader-003",
+    amount: 200.0,
+    type: "Пополнение",
+    method: "Карта",
+    reason: "Корректировка",
+    transaction: "TXN-2025-003",
+    createdAt: "2025-03-01T14:00:00Z",
+  },
+  {
+    id: "bl-004",
+    traderName: "Трейдер 1",
+    traderId: "trader-001",
+    amount: -25.5,
+    type: "Списание",
+    method: "Крипто",
+    reason: "Комиссия",
+    transaction: "TXN-2025-004",
+    createdAt: "2025-03-01T12:00:00Z",
+  },
+];

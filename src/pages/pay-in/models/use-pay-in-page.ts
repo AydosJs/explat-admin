@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
   type RowSelectionState,
 } from "@tanstack/react-table";
@@ -8,11 +9,17 @@ import {
 import { usePayInColumns } from "../pay-in-columns";
 import { mockPayInData } from "../mock-data";
 
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+
 export function usePayInPage() {
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [copiedUid, setCopiedUid] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 25,
+  });
 
   const copyUid = (uid: string) => {
     void navigator.clipboard.writeText(uid).then(() => {
@@ -26,9 +33,11 @@ export function usePayInPage() {
   const table = useReactTable({
     data: mockPayInData,
     columns,
-    state: { rowSelection },
+    state: { rowSelection, pagination },
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const selectedRows = table.getSelectedRowModel().rows;
@@ -46,5 +55,6 @@ export function usePayInPage() {
     deleteDialogOpen,
     setDeleteDialogOpen,
     handleConfirmDelete,
+    pageSizeOptions: PAGE_SIZE_OPTIONS,
   };
 }

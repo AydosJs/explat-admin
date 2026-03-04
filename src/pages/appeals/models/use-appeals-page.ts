@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import {
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
   type RowSelectionState,
 } from "@tanstack/react-table";
@@ -43,6 +44,10 @@ export function useAppealsPage() {
   const [timerFilterActive, setTimerFilterActive] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [copiedOperationId, setCopiedOperationId] = useState<string | null>(null);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 25,
+  });
 
   const copyOperationId = (value: string, appealId: string) => {
     void navigator.clipboard.writeText(value).then(() => {
@@ -72,9 +77,11 @@ export function useAppealsPage() {
   const table = useReactTable({
     data: filteredData,
     columns,
-    state: { rowSelection },
+    state: { rowSelection, pagination },
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const selectedRows = table.getSelectedRowModel().rows;

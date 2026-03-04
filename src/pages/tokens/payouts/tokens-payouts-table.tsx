@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TableStatusLegend } from "@/components/table-status-legend";
+import { TableFooter } from "@/components/table-footer";
 
 import type { TokenPayoutRow } from "./types";
 
@@ -29,7 +29,10 @@ export function TokensPayoutsTable({ table }: TokensPayoutsTableProps) {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead
+                  key={header.id}
+                  className={(header.column.columnDef.meta as { className?: string } | undefined)?.className}
+                >
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
@@ -57,7 +60,11 @@ export function TokensPayoutsTable({ table }: TokensPayoutsTableProps) {
                   {row.getVisibleCells().map((cell, cellIndex) => (
                     <TableCell
                       key={cell.id}
-                      className={cellIndex === 0 ? "relative" : undefined}
+                      className={
+                        cellIndex === 0
+                          ? "relative"
+                          : (cell.column.columnDef.meta as { className?: string } | undefined)?.className
+                      }
                     >
                       {cellIndex === 0 && (
                         <div
@@ -86,13 +93,16 @@ export function TokensPayoutsTable({ table }: TokensPayoutsTableProps) {
           )}
         </TableBody>
       </Table>
-      <TableStatusLegend
-        items={[
-          { dotClassName: "bg-emerald-500/50", label: t("tokensPayouts.statusActive") },
-          { dotClassName: "bg-amber-500/50", label: t("tokensPayouts.statusUsed") },
-          { dotClassName: "bg-red-500/50", label: t("tokensPayouts.statusExpired") },
-        ]}
-        ariaLabel={t("tokensPayouts.statusLegend")}
+      <TableFooter
+        table={table}
+        statusLegend={{
+          items: [
+            { dotClassName: "bg-emerald-500/50", label: t("tokensPayouts.statusActive") },
+            { dotClassName: "bg-amber-500/50", label: t("tokensPayouts.statusUsed") },
+            { dotClassName: "bg-red-500/50", label: t("tokensPayouts.statusExpired") },
+          ],
+          ariaLabel: t("tokensPayouts.statusLegend"),
+        }}
       />
     </div>
   );

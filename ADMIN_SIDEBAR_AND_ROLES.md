@@ -49,10 +49,11 @@ For each role, this doc lists **which pages (sidebar links) are shown**. Visibil
 | 3 | Токены для выплат (PayoutToken) | `/trader-admin-panel/core/payouttoken/` |
 | 4 | Pay in (Transaction) | `/trader-admin-panel/core/transaction/` |
 | 5 | Pay out (Payout) | `/trader-admin-panel/core/payout/` |
-| 6 | Логи балансов (BalanceLog) | `/trader-admin-panel/core/balancelog/` |
-| 7 | Апелляции (Appeal) | `/trader-admin-panel/core/appeal/` |
+| 6 | Устройства (Devices) | `/trader-admin-panel/core/p2pdevice/` |
+| 7 | Логи балансов (BalanceLog) | `/trader-admin-panel/core/balancelog/` |
+| 8 | Апелляции (Appeal) | `/trader-admin-panel/core/appeal/` |
 
-**Total: 7 pages.**
+**Total: 8 pages.**
 
 ---
 

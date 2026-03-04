@@ -11,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { TableFooter } from "@/components/table-footer";
 
 import type { TraderRow } from "./types";
 
@@ -30,7 +31,10 @@ export function TradersTable({ table }: TradersTableProps) {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead
+                  key={header.id}
+                  className={(header.column.columnDef.meta as { className?: string } | undefined)?.className}
+                >
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
@@ -66,7 +70,10 @@ export function TradersTable({ table }: TradersTableProps) {
                 }}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className={(cell.column.columnDef.meta as { className?: string } | undefined)?.className}
+                  >
                     {flexRender(
                       cell.column.columnDef.cell,
                       cell.getContext()
@@ -87,6 +94,7 @@ export function TradersTable({ table }: TradersTableProps) {
           )}
         </TableBody>
       </Table>
+      <TableFooter table={table} />
     </div>
   );
 }

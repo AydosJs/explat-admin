@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
   type RowSelectionState,
 } from "@tanstack/react-table";
@@ -15,6 +16,10 @@ export function useRequisitesPage() {
   const [copiedTokenId, setCopiedTokenId] = useState<string | null>(null);
   const [copiedTelegramId, setCopiedTelegramId] = useState<string | null>(null);
   const [dailyLimitFilterActive, setDailyLimitFilterActive] = useState(false);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 25,
+  });
 
   const copyToken = (value: string, requisiteId: string) => {
     void navigator.clipboard.writeText(value).then(() => {
@@ -42,9 +47,11 @@ export function useRequisitesPage() {
   const table = useReactTable({
     data: mockRequisitesData,
     columns,
-    state: { rowSelection },
+    state: { rowSelection, pagination },
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const selectedRows = table.getSelectedRowModel().rows;

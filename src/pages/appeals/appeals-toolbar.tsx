@@ -1,5 +1,6 @@
-import { Search, Trash2 } from "lucide-react";
+import { Plus, Search, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Link } from "@tanstack/react-router";
 
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
@@ -113,6 +114,12 @@ export function AppealsToolbar({
               ? `${t("appeals.deleteSelected")} (${selectedCount})`
               : t("appeals.deleteSelected")}
           </span>
+        </Button>
+        <Button variant="outline" className="h-9 shrink-0 text-muted-foreground" asChild>
+          <Link to="/appeals/create">
+            <Plus className="size-4" />
+            <span className="whitespace-nowrap">{t("common.create")}</span>
+          </Link>
         </Button>
       </div>
       <ConfirmDialog

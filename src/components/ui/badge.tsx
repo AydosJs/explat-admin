@@ -13,11 +13,11 @@ const badgeVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground [a]:hover:bg-secondary/80",
         card:
-          "bg-chart-4 text-primary-foreground border-transparent [a]:hover:bg-chart-4/90",
+          "border-chart-4 text-chart-4 bg-transparent [a]:hover:bg-chart-4/10 dark:border-chart-4 dark:text-chart-4 dark:[a]:hover:bg-chart-4/20",
         crypto:
-          "bg-orange text-primary-foreground border-transparent [a]:hover:bg-orange/90",
+          "border-orange text-orange bg-transparent [a]:hover:bg-orange/10 dark:border-orange dark:text-orange dark:[a]:hover:bg-orange/20",
         destructive:
-          "bg-destructive/10 [a]:hover:bg-destructive/20 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 text-destructive dark:bg-destructive/20",
+          "border-destructive text-destructive bg-transparent [a]:hover:bg-destructive/10 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:[a]:hover:bg-destructive/20",
         outline:
           "border-border text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground",
         ghost:

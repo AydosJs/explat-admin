@@ -102,7 +102,8 @@ export function useTokensPayoutsColumns(
       },
       {
         accessorKey: "isActive",
-        header: t("tokensPayouts.isActive"),
+        meta: { className: "text-center" },
+        header: () => <div className="text-center">{t("tokensPayouts.isActive")}</div>,
         cell: ({ row }) => {
           const isActive = row.original.isActive;
           return (

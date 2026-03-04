@@ -11,15 +11,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TableStatusLegend } from "@/components/table-status-legend";
+import { TableFooter } from "@/components/table-footer";
 
 import type { PayInRow } from "./types";
 
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
+
 interface PayInTableProps {
   table: TanStackTable<PayInRow>;
+  pageSizeOptions?: readonly number[];
 }
 
-export function PayInTable({ table }: PayInTableProps) {
+export function PayInTable({
+  table,
+  pageSizeOptions = PAGE_SIZE_OPTIONS,
+}: PayInTableProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const columns = table.getAllColumns();
@@ -100,13 +106,17 @@ export function PayInTable({ table }: PayInTableProps) {
           )}
         </TableBody>
       </Table>
-      <TableStatusLegend
-        items={[
-          { dotClassName: "bg-emerald-500/50", label: t("payIn.statusSuccess") },
-          { dotClassName: "bg-amber-500/50", label: t("payIn.statusPending") },
-          { dotClassName: "bg-red-500/50", label: t("payIn.statusFailed") },
-        ]}
-        ariaLabel={t("payIn.statusLegend")}
+      <TableFooter
+        table={table}
+        statusLegend={{
+          items: [
+            { dotClassName: "bg-emerald-500/50", label: t("payIn.statusSuccess") },
+            { dotClassName: "bg-amber-500/50", label: t("payIn.statusPending") },
+            { dotClassName: "bg-red-500/50", label: t("payIn.statusFailed") },
+          ],
+          ariaLabel: t("payIn.statusLegend"),
+        }}
+        pageSizeOptions={pageSizeOptions}
       />
     </div>
   );

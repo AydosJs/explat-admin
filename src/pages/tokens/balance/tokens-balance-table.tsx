@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TableStatusLegend } from "@/components/table-status-legend";
+import { TableFooter } from "@/components/table-footer";
 
 import type { TokenBalanceRow } from "./types";
 
@@ -86,13 +86,16 @@ export function TokensBalanceTable({ table }: TokensBalanceTableProps) {
           )}
         </TableBody>
       </Table>
-      <TableStatusLegend
-        items={[
-          { dotClassName: "bg-emerald-500/50", label: t("tokensBalance.statusActive") },
-          { dotClassName: "bg-amber-500/50", label: t("tokensBalance.statusUsed") },
-          { dotClassName: "bg-red-500/50", label: t("tokensBalance.statusExpired") },
-        ]}
-        ariaLabel={t("tokensBalance.statusLegend")}
+      <TableFooter
+        table={table}
+        statusLegend={{
+          items: [
+            { dotClassName: "bg-emerald-500/50", label: t("tokensBalance.statusActive") },
+            { dotClassName: "bg-amber-500/50", label: t("tokensBalance.statusUsed") },
+            { dotClassName: "bg-red-500/50", label: t("tokensBalance.statusExpired") },
+          ],
+          ariaLabel: t("tokensBalance.statusLegend"),
+        }}
       />
     </div>
   );

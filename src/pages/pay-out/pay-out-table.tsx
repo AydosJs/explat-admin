@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TableStatusLegend } from "@/components/table-status-legend";
+import { TableFooter } from "@/components/table-footer";
 
 import type { PayOutRow } from "./types";
 
@@ -87,13 +87,16 @@ export function PayOutTable({ table }: PayOutTableProps) {
           )}
         </TableBody>
       </Table>
-      <TableStatusLegend
-        items={[
-          { dotClassName: "bg-emerald-500/50", label: t("payOut.statusSuccess") },
-          { dotClassName: "bg-amber-500/50", label: t("payOut.statusPending") },
-          { dotClassName: "bg-red-500/50", label: t("payOut.statusFailed") },
-        ]}
-        ariaLabel={t("payOut.statusLegend")}
+      <TableFooter
+        table={table}
+        statusLegend={{
+          items: [
+            { dotClassName: "bg-emerald-500/50", label: t("payOut.statusSuccess") },
+            { dotClassName: "bg-amber-500/50", label: t("payOut.statusPending") },
+            { dotClassName: "bg-red-500/50", label: t("payOut.statusFailed") },
+          ],
+          ariaLabel: t("payOut.statusLegend"),
+        }}
       />
     </div>
   );

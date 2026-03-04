@@ -39,6 +39,7 @@ const ROLE_PATHS: Record<
     SIDEBAR_PATHS.tokensPayouts,
     SIDEBAR_PATHS.payIn,
     SIDEBAR_PATHS.payOut,
+    SIDEBAR_PATHS.devices,
     SIDEBAR_PATHS.moreBalanceLogs,
     SIDEBAR_PATHS.appeals,
   ],

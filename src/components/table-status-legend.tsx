@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export interface TableStatusLegendItem {
   /** Tailwind class for the dot (e.g. "bg-emerald-500/50") */
   dotClassName: string;
@@ -9,18 +11,23 @@ interface TableStatusLegendProps {
   items: TableStatusLegendItem[];
   /** Optional aria-label for the legend (e.g. translated "Status legend") */
   ariaLabel?: string;
+  /** Optional className (e.g. border-t-0 when inside a combined bar) */
+  className?: string;
 }
 
 /**
  * Renders a compact status legend (color dot + label per item) for tables
  * that use a left-side status bar. Place below the table inside the same card.
  */
-export function TableStatusLegend({ items, ariaLabel }: TableStatusLegendProps) {
+export function TableStatusLegend({ items, ariaLabel, className }: TableStatusLegendProps) {
   if (items.length === 0) return null;
 
   return (
     <div
-      className="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border/50 px-4 py-2 text-sm text-muted-foreground"
+      className={cn(
+        "flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border/50 px-4 py-2 text-sm text-muted-foreground",
+        className
+      )}
       aria-label={ariaLabel}
       role="list"
     >

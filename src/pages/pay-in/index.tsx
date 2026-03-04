@@ -11,6 +11,7 @@ export function PayInPage() {
     deleteDialogOpen,
     setDeleteDialogOpen,
     handleConfirmDelete,
+    pageSizeOptions,
   } = usePayInPage();
 
   return (
@@ -23,7 +24,7 @@ export function PayInPage() {
         onDeleteDialogOpenChange={setDeleteDialogOpen}
         onConfirmDelete={handleConfirmDelete}
       />
-      <PayInTable table={table} />
+      <PayInTable table={table} pageSizeOptions={pageSizeOptions} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
   type RowSelectionState,
 } from "@tanstack/react-table";
@@ -13,15 +14,21 @@ export function useDevicesPage() {
   const [batteryFilterActive, setBatteryFilterActive] = useState(false);
   const [search, setSearch] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 25,
+  });
 
   const columns = useDevicesColumns(batteryFilterActive, setBatteryFilterActive);
 
   const table = useReactTable({
     data: mockDevicesData,
     columns,
-    state: { rowSelection },
+    state: { rowSelection, pagination },
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const selectedRows = table.getSelectedRowModel().rows;

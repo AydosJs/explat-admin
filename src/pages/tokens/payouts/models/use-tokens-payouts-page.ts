@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
   type RowSelectionState,
 } from "@tanstack/react-table";
@@ -13,6 +14,10 @@ export function useTokensPayoutsPage() {
   const [search, setSearch] = useState("");
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [copiedTokenId, setCopiedTokenId] = useState<string | null>(null);
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 25,
+  });
 
   const copyToken = (value: string, rowId: string) => {
     void navigator.clipboard.writeText(value).then(() => {
@@ -26,9 +31,11 @@ export function useTokensPayoutsPage() {
   const table = useReactTable({
     data: mockTokenPayoutsData,
     columns,
-    state: { rowSelection },
+    state: { rowSelection, pagination },
     onRowSelectionChange: setRowSelection,
+    onPaginationChange: setPagination,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   const selectedRows = table.getSelectedRowModel().rows;

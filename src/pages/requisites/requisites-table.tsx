@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TableStatusLegend } from "@/components/table-status-legend";
+import { TableFooter } from "@/components/table-footer";
 
 import type { RequisiteRow } from "./types";
 
@@ -83,15 +83,18 @@ export function RequisitesTable({ table }: RequisitesTableProps) {
           )}
         </TableBody>
       </Table>
-      <TableStatusLegend
-        items={[
-          { dotClassName: "bg-emerald-500/50", label: t("requisites.statusActive") },
-          {
-            dotClassName: "bg-destructive/50",
-            label: t("requisites.statusInactive"),
-          },
-        ]}
-        ariaLabel={t("requisites.statusLegend")}
+      <TableFooter
+        table={table}
+        statusLegend={{
+          items: [
+            { dotClassName: "bg-emerald-500/50", label: t("requisites.statusActive") },
+            {
+              dotClassName: "bg-destructive/50",
+              label: t("requisites.statusInactive"),
+            },
+          ],
+          ariaLabel: t("requisites.statusLegend"),
+        }}
       />
     </div>
   );

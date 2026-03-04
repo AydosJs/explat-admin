@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TableStatusLegend } from "@/components/table-status-legend";
+import { TableFooter } from "@/components/table-footer";
 
 import type { AppealRow } from "./types";
 
@@ -86,13 +86,16 @@ export function AppealsTable({ table }: AppealsTableProps) {
           )}
         </TableBody>
       </Table>
-      <TableStatusLegend
-        items={[
-          { dotClassName: "bg-emerald-500/50", label: t("appeals.statusResolved") },
-          { dotClassName: "bg-amber-500/50", label: t("appeals.statusPending") },
-          { dotClassName: "bg-red-500/50", label: t("appeals.statusRejected") },
-        ]}
-        ariaLabel={t("appeals.statusLegend")}
+      <TableFooter
+        table={table}
+        statusLegend={{
+          items: [
+            { dotClassName: "bg-emerald-500/50", label: t("appeals.statusResolved") },
+            { dotClassName: "bg-amber-500/50", label: t("appeals.statusPending") },
+            { dotClassName: "bg-red-500/50", label: t("appeals.statusRejected") },
+          ],
+          ariaLabel: t("appeals.statusLegend"),
+        }}
       />
     </div>
   );
