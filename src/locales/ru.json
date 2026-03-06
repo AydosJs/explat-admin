@@ -54,6 +54,7 @@
   },
   "dashboard": {
     "balanceLabel": "Баланс",
+    "totalBalance": "Итого баланс",
     "index": "#",
     "ourMerchants": "Наши мерчанты",
     "search": "Поиск...",
@@ -72,7 +73,21 @@
     "transactions": "Транзакции",
     "success": "Успешно",
     "totalCount": "Общее кол-во",
-    "cancelled": "Отменённые"
+    "cancelled": "Отменённые",
+    "incomeCalendar": "Календарь доходов",
+    "incomeCalendarPrev": "Пред. месяц",
+    "incomeCalendarNext": "След. месяц",
+    "incomeCalendarToday": "Сегодня",
+    "incomeCalendarOperations": "Операций",
+    "incomeCalendarConversion": "Конверсия",
+    "incomeCalendarEarnings": "Заработок",
+    "incomeCalendarDayMon": "Пн",
+    "incomeCalendarDayTue": "Вт",
+    "incomeCalendarDayWed": "Ср",
+    "incomeCalendarDayThu": "Чт",
+    "incomeCalendarDayFri": "Пт",
+    "incomeCalendarDaySat": "Сб",
+    "incomeCalendarDaySun": "Вс"
   },
   "payIn": {
     "index": "#",

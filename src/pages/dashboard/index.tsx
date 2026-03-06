@@ -2,11 +2,7 @@ import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RotateCw, Search } from "lucide-react";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -16,7 +12,6 @@ import { DashboardTransactionsCard } from "./dashboard-transactions-card";
 import { formatBalanceUsdt } from "./format-balance";
 import {
   DASHBOARD_MERCHANTS,
-  DASHBOARD_OVERALL_BALANCE_USDT,
   DASHBOARD_STATS_PAY_IN_USDT,
   DASHBOARD_STATS_PAY_OUT_USDT,
   DASHBOARD_PROFIT_PAY_IN_USDT,
@@ -29,6 +24,7 @@ import {
   DASHBOARD_TRANSACTIONS_CANCELLED,
 } from "./mock-data";
 import type { DashboardStatsPeriod } from "./mock-data";
+import { IncomeCalendar } from "./income-calendar";
 import { MerchantsTable } from "./merchants-table";
 
 export function DashboardPage() {
@@ -40,8 +36,6 @@ export function DashboardPage() {
     useState<DashboardStatsPeriod>("all");
   const [transactionsPeriod, setTransactionsPeriod] =
     useState<DashboardStatsPeriod>("all");
-  const overallBalance = DASHBOARD_OVERALL_BALANCE_USDT;
-  const isNegative = overallBalance < 0;
 
   const filteredMerchants = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -51,32 +45,13 @@ export function DashboardPage() {
     );
   }, [search]);
 
+  const merchantsTotalBalance = useMemo(
+    () => filteredMerchants.reduce((sum, m) => sum + m.balanceUsdt, 0),
+    [filteredMerchants]
+  );
+
   return (
     <div className="space-y-6">
-      <section aria-labelledby="dashboard-balance-heading">
-        <h2 id="dashboard-balance-heading" className="sr-only">
-          {t("dashboard.balanceLabel")}
-        </h2>
-        <Card>
-          <CardHeader className="py-4 pb-1">
-            <span className="text-base font-medium text-muted-foreground">
-              {t("dashboard.balanceLabel")}
-            </span>
-          </CardHeader>
-          <CardContent className="py-4 pt-2">
-            <p
-              className={
-                isNegative
-                  ? "tabular-nums text-2xl font-semibold text-destructive sm:text-3xl"
-                  : "tabular-nums text-2xl font-semibold text-foreground sm:text-3xl"
-              }
-            >
-              {formatBalanceUsdt(overallBalance)} USDT
-            </p>
-          </CardContent>
-        </Card>
-      </section>
-
       <section
         aria-labelledby="dashboard-merchants-heading"
         className="flex w-full flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-6 "
@@ -88,7 +63,7 @@ export function DashboardPage() {
           >
             {t("dashboard.ourMerchants")}
           </h2>
-          <Card className="flex min-h-0 max-h-[414px]! flex-1 flex-col overflow-hidden">
+          <Card className="flex max-h-[411px]! min-h-0 flex-1 flex-col overflow-hidden">
             <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border/50 px-4 py-3">
               <div className="relative min-w-0 flex-1 max-w-xs">
                 <Search className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -112,9 +87,25 @@ export function DashboardPage() {
                 <RotateCw className="size-5" />
               </Button>
             </div>
-            <CardContent className="min-h-0 overflow-auto p-0">
+            <CardContent className="min-h-0 flex-1 overflow-auto p-0">
               <MerchantsTable merchants={filteredMerchants} />
             </CardContent>
+            <div className="shrink-0 border-t border-border/50 px-4 py-3">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium text-muted-foreground">
+                  {t("dashboard.totalBalance")}
+                </span>
+                <span
+                  className={
+                    merchantsTotalBalance < 0
+                      ? "tabular-nums font-semibold text-destructive"
+                      : "tabular-nums font-semibold text-emerald-600 dark:text-emerald-400"
+                  }
+                >
+                  {formatBalanceUsdt(merchantsTotalBalance)} USDT
+                </span>
+              </div>
+            </div>
           </Card>
         </div>
         <div className="grid min-w-0 w-full grid-cols-1 gap-4 lg:w-1/2 lg:grid-cols-2 lg:content-start">
@@ -165,6 +156,10 @@ export function DashboardPage() {
             />
           </div>
         </div>
+      </section>
+
+      <section className="w-full">
+        <IncomeCalendar />
       </section>
     </div>
   );

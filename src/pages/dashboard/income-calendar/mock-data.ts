@@ -1,0 +1,33 @@
+import type { IncomeCalendarDayStats } from "./types";
+
+/** Key: YYYY-MM-DD. Days not in map have no work done (show empty, not zeros). */
+export const INCOME_CALENDAR_DAY_DATA: Record<string, IncomeCalendarDayStats> = {
+  "2026-02-23": { operations: 5, conversionPct: 2.0, earningsUsdt: 42.0 },
+  "2026-02-24": { operations: 18, conversionPct: 4.5, earningsUsdt: 210.0 },
+  "2026-02-26": { operations: 9, conversionPct: 3.2, earningsUsdt: 95.5 },
+  "2026-02-27": { operations: 14, conversionPct: 5.1, earningsUsdt: 178.0 },
+  "2026-03-02": { operations: 12, conversionPct: 4.2, earningsUsdt: 150.5 },
+  "2026-03-03": { operations: 8, conversionPct: 3.1, earningsUsdt: 89.0 },
+  "2026-03-04": { operations: 22, conversionPct: 6.0, earningsUsdt: 285.0 },
+  "2026-03-06": { operations: 25, conversionPct: 5.8, earningsUsdt: 320.0 },
+  "2026-03-07": { operations: 11, conversionPct: 3.8, earningsUsdt: 132.0 },
+  "2026-03-08": { operations: 19, conversionPct: 4.9, earningsUsdt: 245.5 },
+  "2026-03-09": { operations: 6, conversionPct: 2.5, earningsUsdt: 58.0 },
+  "2026-03-11": { operations: 31, conversionPct: 7.2, earningsUsdt: 410.0 },
+  "2026-03-12": { operations: 16, conversionPct: 4.0, earningsUsdt: 198.0 },
+  "2026-03-13": { operations: 7, conversionPct: 2.8, earningsUsdt: 72.5 },
+  "2026-03-15": { operations: 28, conversionPct: 6.5, earningsUsdt: 365.0 },
+  "2026-03-16": { operations: 13, conversionPct: 3.5, earningsUsdt: 145.0 },
+  "2026-03-18": { operations: 20, conversionPct: 5.2, earningsUsdt: 268.0 },
+  "2026-03-19": { operations: 4, conversionPct: 1.8, earningsUsdt: 35.0 },
+  "2026-03-21": { operations: 27, conversionPct: 6.1, earningsUsdt: 342.0 },
+  "2026-03-22": { operations: 15, conversionPct: 4.3, earningsUsdt: 189.0 },
+  "2026-03-25": { operations: 23, conversionPct: 5.5, earningsUsdt: 298.0 },
+  "2026-03-26": { operations: 10, conversionPct: 3.0, earningsUsdt: 112.0 },
+  "2026-03-28": { operations: 17, conversionPct: 4.7, earningsUsdt: 225.0 },
+  "2026-03-29": { operations: 29, conversionPct: 6.8, earningsUsdt: 388.0 },
+  "2026-03-31": { operations: 21, conversionPct: 5.0, earningsUsdt: 275.0 },
+  "2026-04-01": { operations: 14, conversionPct: 3.9, earningsUsdt: 165.0 },
+  "2026-04-02": { operations: 8, conversionPct: 2.6, earningsUsdt: 82.0 },
+  "2026-04-05": { operations: 26, conversionPct: 6.2, earningsUsdt: 335.0 },
+};
