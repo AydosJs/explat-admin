@@ -52,6 +52,28 @@
     "kursOnEntry": "Курс на вход",
     "kursOnWithdraw": "Курс на вывод"
   },
+  "dashboard": {
+    "balanceLabel": "Баланс",
+    "index": "#",
+    "ourMerchants": "Наши мерчанты",
+    "search": "Поиск...",
+    "reload": "Обновить",
+    "statistics": "Статистика",
+    "payIn": "Pay In",
+    "payOut": "Pay Out",
+    "periodToday": "Сегодня",
+    "periodWeek": "Неделя",
+    "periodMonth": "Месяц",
+    "periodAllTime": "Все время",
+    "periodFilterLabel": "Период",
+    "profit": "Прибыль",
+    "conversion": "Конверсия",
+    "appeals": "Апелляции",
+    "transactions": "Транзакции",
+    "success": "Успешно",
+    "totalCount": "Общее кол-во",
+    "cancelled": "Отменённые"
+  },
   "payIn": {
     "index": "#",
     "uid": "UID",
