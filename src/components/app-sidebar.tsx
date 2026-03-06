@@ -15,6 +15,7 @@ import {
   Smartphone,
   Store,
   TrendingUp,
+  Wallet,
 } from "lucide-react";
 
 import {
@@ -25,6 +26,7 @@ import {
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -41,6 +43,7 @@ import {
   type SidebarMenuItemGroup,
 } from "@/config/sidebar-menu";
 import { useAppSidebar } from "@/hooks/use-app-sidebar";
+import { cn } from "@/lib/utils";
 
 import logoIcon from "@/assets/logo.svg";
 import logoWithText from "@/assets/logo-with-text.svg";
@@ -137,6 +140,56 @@ function GroupNavItem({
   );
 }
 
+const BALANCE_PLACEHOLDER = 12450.0;
+const KURS_ENTRY = 1.05;
+const KURS_WITHDRAW = 1.02;
+
+function formatBalance(value: number) {
+  return value.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
+function SidebarFooterRates({ t }: { t: (key: string) => string }) {
+  return (
+    <div className="mx-2 mb-2 rounded-lg border border-sidebar-border/60 bg-sidebar-accent/40 p-3">
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center justify-between gap-2">
+          <span className="flex items-center gap-2 text-xs font-medium text-sidebar-foreground/80">
+            <Wallet className="size-3.5 shrink-0" aria-hidden />
+            {t("sidebar.balance")}
+          </span>
+          <span className="tabular-nums text-sm font-semibold text-sidebar-foreground">
+            {formatBalance(BALANCE_PLACEHOLDER)} USDT
+          </span>
+        </div>
+        <div className="h-px bg-sidebar-border/60" aria-hidden />
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center justify-between gap-2 text-xs">
+            <span className="flex items-center gap-2 text-sidebar-foreground/70">
+              <ArrowDownToLine className="size-3.5 shrink-0" aria-hidden />
+              {t("sidebar.kursOnEntry")}
+            </span>
+            <span className="tabular-nums font-medium text-sidebar-foreground">
+              {KURS_ENTRY.toFixed(2)}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-2 text-xs">
+            <span className="flex items-center gap-2 text-sidebar-foreground/70">
+              <ArrowUpFromLine className="size-3.5 shrink-0" aria-hidden />
+              {t("sidebar.kursOnWithdraw")}
+            </span>
+            <span className="tabular-nums font-medium text-sidebar-foreground">
+              {KURS_WITHDRAW.toFixed(2)}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function AppSidebar() {
   const { t } = useTranslation();
   const {
@@ -185,6 +238,9 @@ export function AppSidebar() {
           )}
         </ul>
       </nav>
+      <div className="flex shrink-0 flex-col border-t border-sidebar-border p-2">
+        <SidebarFooterRates t={t} />
+      </div>
     </>
   );
 
@@ -196,7 +252,7 @@ export function AppSidebar() {
     >
       <Sidebar collapsible="icon">
         <SidebarHeader className="flex h-14 max-h-14 shrink-0 flex-row items-center border-b border-sidebar-border p-0">
-          <div className="flex h-full min-w-0 flex-1 items-center gap-2 pl-0 px-2 pl-3">
+          <div className="flex h-full min-w-0 flex-1 items-center gap-2 px-2 pl-3">
             {isExpanded ? (
               <img
                 src={logoWithText}
@@ -239,6 +295,16 @@ export function AppSidebar() {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
+        <SidebarFooter
+          className={cn(
+            "flex flex-col overflow-hidden transition-[max-height,opacity,transform] duration-300 ease-in-out",
+            "max-h-[240px] opacity-100 translate-y-0 delay-[220ms]",
+            "group-data-[collapsible=icon]:max-h-0 group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:translate-y-2",
+            "group-data-[collapsible=icon]:delay-0 group-data-[collapsible=icon]:duration-150 group-data-[collapsible=icon]:ease-out"
+          )}
+        >
+          <SidebarFooterRates t={t} />
+        </SidebarFooter>
         {/* Rounded toggle on the sidebar border, centered with header (desktop only) */}
         {!isMobile && (
           <Button

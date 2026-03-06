@@ -47,7 +47,10 @@
     "more": "Еще",
     "balanceLogs": "Логи балансов",
     "callbackLogs": "Логи Callback'ов",
-    "paymentReserve": "Резерв оплат"
+    "paymentReserve": "Резерв оплат",
+    "balance": "Баланс",
+    "kursOnEntry": "Курс на вход",
+    "kursOnWithdraw": "Курс на вывод"
   },
   "payIn": {
     "index": "#",
