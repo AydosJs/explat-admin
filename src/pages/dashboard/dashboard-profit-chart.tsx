@@ -117,18 +117,23 @@ export function DashboardProfitChart({ data }: DashboardProfitChartProps) {
                 tickFormatter={(value) => formatBalanceUsdt(value)}
               />
               <Tooltip
-                content={({
-                  active,
-                  payload,
-                  label,
-                }: {
-                  active?: boolean;
-                  payload?: Array<{ name: string; value: number; dataKey: string }>;
-                  label?: string;
-                }) => {
+                content={(props: unknown) => {
+                  const {
+                    active,
+                    payload,
+                    label,
+                  } = props as {
+                    active?: boolean;
+                    payload?: Array<{
+                      name?: string;
+                      value?: number;
+                      dataKey: string;
+                    }>;
+                    label?: string;
+                  };
                   if (!active || !payload?.length) return null;
                   const entry = payload[0];
-                  const value = entry.value;
+                  const value = entry?.value ?? 0;
                   const isNegative = value < 0;
                   return (
                     <div className="rounded-md border border-border bg-card px-3 py-2 text-sm shadow-sm">

@@ -81,20 +81,18 @@ export function DashboardStatusChart({
                   ))}
                 </Pie>
                 <Tooltip
-                  content={({
-                    active,
-                    payload,
-                  }: {
-                    active?: boolean;
-                    payload?: Array<{ name: string; value: number }>;
-                  }) => {
+                  content={(props: unknown) => {
+                    const { active, payload } = props as {
+                      active?: boolean;
+                      payload?: Array<{ name?: string; value?: number }>;
+                    };
                     if (!active || !payload?.length) return null;
                     const item = payload[0];
-                    const value = item.value;
+                    const value = item?.value ?? 0;
                     const pct =
                       total > 0 ? ((value / total) * 100).toFixed(1) : "0";
                     const color =
-                      item.name === t("dashboard.success")
+                      item?.name === t("dashboard.success")
                         ? "var(--success)"
                         : "var(--destructive)";
                     return (
@@ -103,7 +101,7 @@ export function DashboardStatusChart({
                           className="font-medium"
                           style={{ color }}
                         >
-                          {item.name}:
+                          {item?.name ?? ""}:
                         </span>{" "}
                         <span className="tabular-nums" style={{ color }}>
                           {value} ({pct}%)

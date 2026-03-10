@@ -111,24 +111,30 @@ export function DashboardPayInOutChart({ data }: DashboardPayInOutChartProps) {
                 tickFormatter={(value) => formatBalanceUsdt(value)}
               />
               <Tooltip
-                content={({
-                  active,
-                  payload,
-                  label,
-                }: {
-                  active?: boolean;
-                  payload?: Array<{
-                    name: string;
-                    value: number;
-                    dataKey: string;
-                  }>;
-                  label?: string;
-                }) => {
+                content={(props: unknown) => {
+                  const {
+                    active,
+                    payload,
+                    label,
+                  } = props as {
+                    active?: boolean;
+                    payload?: Array<{
+                      name?: string;
+                      value?: number;
+                      dataKey: string;
+                    }>;
+                    label?: string;
+                  };
                   if (!active || !payload?.length) return null;
-                  const uniqueByDataKey = payload.filter(
-                    (entry, i, arr) =>
-                      arr.findLastIndex((e) => e.dataKey === entry.dataKey) === i
-                  );
+                  const seen = new Set<string>();
+                  const uniqueByDataKey = [...payload]
+                    .reverse()
+                    .filter((entry) => {
+                      if (seen.has(entry.dataKey)) return false;
+                      seen.add(entry.dataKey);
+                      return true;
+                    })
+                    .reverse();
                   return (
                     <div className="rounded-md border border-border bg-card px-3 py-2 text-sm shadow-sm">
                       <p className="mb-2 font-medium text-foreground">
@@ -150,13 +156,13 @@ export function DashboardPayInOutChart({ data }: DashboardPayInOutChartProps) {
                               className="font-medium"
                               style={{ color }}
                             >
-                              {entry.name}:
+                              {entry.name ?? entry.dataKey}:
                             </span>
                             <span
                               className="tabular-nums font-medium"
                               style={{ color }}
                             >
-                              {formatBalanceUsdt(entry.value)} USDT
+                              {formatBalanceUsdt(entry.value ?? 0)} USDT
                             </span>
                           </div>
                         );
