@@ -8,10 +8,15 @@ import { Input } from "@/components/ui/input";
 
 import { DashboardConversionCard } from "./dashboard-conversion-card";
 import { DashboardStatsCard } from "./dashboard-stats-card";
+import { DashboardPayInOutChart } from "./dashboard-pay-in-out-chart";
+import { DashboardProfitChart } from "./dashboard-profit-chart";
+import { DashboardStatusChart } from "./dashboard-status-chart";
 import { DashboardTransactionsCard } from "./dashboard-transactions-card";
 import { formatBalanceUsdt } from "./format-balance";
 import {
   DASHBOARD_MERCHANTS,
+  DASHBOARD_PAY_IN_OUT_SERIES,
+  DASHBOARD_PROFIT_SERIES,
   DASHBOARD_STATS_PAY_IN_USDT,
   DASHBOARD_STATS_PAY_OUT_USDT,
   DASHBOARD_PROFIT_PAY_IN_USDT,
@@ -52,6 +57,26 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <section
+        aria-labelledby="dashboard-profit-chart-heading"
+        className="w-full"
+      >
+        <DashboardProfitChart data={DASHBOARD_PROFIT_SERIES} />
+      </section>
+      <section
+        aria-labelledby="dashboard-status-chart-heading"
+        className="flex w-full flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-6"
+      >
+        <div className="min-w-0 lg:w-1/3">
+          <DashboardStatusChart
+            successCount={DASHBOARD_TRANSACTIONS_SUCCESS}
+            rejectedCount={DASHBOARD_TRANSACTIONS_CANCELLED}
+          />
+        </div>
+        <div className="min-w-0 lg:w-2/3">
+          <DashboardPayInOutChart data={DASHBOARD_PAY_IN_OUT_SERIES} />
+        </div>
+      </section>
       <section
         aria-labelledby="dashboard-merchants-heading"
         className="flex w-full flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-6 "

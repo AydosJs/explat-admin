@@ -14,9 +14,19 @@ import { ru } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, CalendarIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 import { formatBalanceUsdt, formatPercent } from "../format-balance";
-import { INCOME_CALENDAR_DAY_DATA } from "./mock-data";
+import { DayDetailPanel } from "./day-detail-panel";
+import {
+  INCOME_CALENDAR_DAY_DATA,
+  INCOME_CALENDAR_DAY_DETAIL_DATA,
+} from "./mock-data";
+import type { DayDetailStats } from "./types";
 import type { IncomeCalendarDayStats } from "./types";
 
 const WEEK_STARTS_ON = 1; // Monday
@@ -46,72 +56,104 @@ interface CalendarDayCellProps {
   date: Date;
   isCurrentMonth: boolean;
   isToday: boolean;
+  isSelected: boolean;
   stats: IncomeCalendarDayStats | null;
+  dayDetailStats: DayDetailStats | null;
   dayLabel: string;
   operationsLabel: string;
   conversionLabel: string;
   earningsLabel: string;
+  noDataLabel: string;
+  onSelect: () => void;
+  onOpenChange: (open: boolean) => void;
 }
 
 function CalendarDayCell({
   date,
   isCurrentMonth,
   isToday,
+  isSelected,
   stats,
+  dayDetailStats,
   dayLabel,
   operationsLabel,
   conversionLabel,
   earningsLabel,
+  noDataLabel,
+  onSelect,
+  onOpenChange,
 }: CalendarDayCellProps) {
   const dateNum = format(date, "d");
 
   return (
-    <div
-      className="flex min-h-30 flex-col border-r border-b border-border bg-card p-2 text-card-foreground transition-colors hover:bg-muted/50 sm:min-h-32 sm:p-3"
-      aria-label={dayLabel}
-    >
-      <div className="flex items-center justify-between gap-1">
-        <span
-          className={
-            !isCurrentMonth
-              ? "text-muted-foreground/60"
-              : isToday
-                ? "flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold sm:size-7"
-                : "text-sm font-medium text-foreground sm:text-sm"
-          }
+    <Popover open={isSelected} onOpenChange={onOpenChange}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          onClick={onSelect}
+          className={`flex min-h-30 w-full flex-col border-r border-b border-border bg-card p-2 text-left text-card-foreground transition-colors hover:bg-muted/50 sm:min-h-32 sm:p-3 ${isSelected ? "ring-2 ring-primary ring-inset" : ""}`}
+          aria-label={dayLabel}
+          aria-pressed={isSelected}
         >
-          {dateNum}
-        </span>
-      </div>
-      {stats !== null ? (
-        <div className=" flex flex-1 flex-col justify-center gap-0.5 text-xs sm:gap-1 sm:text-sm">
-          <div className="flex min-w-0 items-center justify-between gap-1">
-            <span className="truncate text-muted-foreground">{operationsLabel}</span>
-            <span className="shrink-0 tabular-nums font-medium">{stats.operations}</span>
-          </div>
-          <div className="flex min-w-0 items-center justify-between gap-1">
-            <span className="truncate text-muted-foreground">{conversionLabel}</span>
-            <span className="shrink-0 tabular-nums font-medium text-destructive">
-              {formatPercent(stats.conversionPct)}
+          <div className="flex items-center justify-between gap-1">
+            <span
+              className={
+                !isCurrentMonth
+                  ? "text-muted-foreground/60"
+                  : isToday
+                    ? "flex size-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-semibold sm:size-7"
+                    : "text-sm font-medium text-foreground sm:text-sm"
+              }
+            >
+              {dateNum}
             </span>
           </div>
-          <div className="flex min-w-0 items-center justify-between gap-1">
-            <span className="truncate text-muted-foreground">{earningsLabel}</span>
-            <span className="shrink-0 whitespace-nowrap tabular-nums font-medium text-emerald-600 dark:text-emerald-400">
-              {formatBalanceUsdt(stats.earningsUsdt)}
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-1 items-center" aria-hidden />
-      )}
-    </div>
+          {stats !== null ? (
+            <div className=" flex flex-1 flex-col justify-center gap-0.5 text-xs sm:gap-1 sm:text-sm">
+              <div className="flex min-w-0 items-center justify-between gap-1">
+                <span className="truncate text-muted-foreground">{operationsLabel}</span>
+                <span className="shrink-0 tabular-nums font-medium">{stats.operations}</span>
+              </div>
+              <div className="flex min-w-0 items-center justify-between gap-1">
+                <span className="truncate text-muted-foreground">{conversionLabel}</span>
+                <span className="shrink-0 tabular-nums font-medium text-destructive">
+                  {formatPercent(stats.conversionPct)}
+                </span>
+              </div>
+              <div className="flex min-w-0 items-center justify-between gap-1">
+                <span className="truncate text-muted-foreground">{earningsLabel}</span>
+                <span className="shrink-0 whitespace-nowrap tabular-nums font-medium text-emerald-600 dark:text-emerald-400">
+                  {formatBalanceUsdt(stats.earningsUsdt)}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-1 items-center" aria-hidden />
+          )}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-auto max-w-[calc(100vw-2rem)] p-0"
+        align="start"
+        side="bottom"
+        sideOffset={6}
+      >
+        {dayDetailStats != null ? (
+          <DayDetailPanel date={date} stats={dayDetailStats} compact />
+        ) : (
+          <p className="px-3 py-4 text-sm text-muted-foreground">
+            {noDataLabel}
+          </p>
+        )}
+      </PopoverContent>
+    </Popover>
   );
 }
 
 export function IncomeCalendar() {
   const { t } = useTranslation();
   const [viewMonth, setViewMonth] = useState(() => new Date());
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const gridDays = useMemo(() => {
     const start = startOfWeek(startOfMonth(viewMonth), {
@@ -192,19 +234,33 @@ export function IncomeCalendar() {
                   {t(`dashboard.${key}`)}
                 </div>
               ))}
-              {gridDays.map((date) => (
-                <CalendarDayCell
-                  key={date.getTime()}
-                  date={date}
-                  isCurrentMonth={isSameMonth(date, viewMonth)}
-                  isToday={isSameDay(date, today)}
-                  stats={getStatsForDay(toDateKey(date))}
-                  dayLabel={format(date, "d MMMM yyyy", { locale: ru })}
-                  operationsLabel={t("dashboard.incomeCalendarOperations")}
-                  conversionLabel={t("dashboard.incomeCalendarConversion")}
-                  earningsLabel={t("dashboard.incomeCalendarEarnings")}
-                />
-              ))}
+              {gridDays.map((date) => {
+                const dateKey = toDateKey(date);
+                const dayDetailStats =
+                  INCOME_CALENDAR_DAY_DETAIL_DATA[dateKey] ?? null;
+                return (
+                  <CalendarDayCell
+                    key={date.getTime()}
+                    date={date}
+                    isCurrentMonth={isSameMonth(date, viewMonth)}
+                    isToday={isSameDay(date, today)}
+                    isSelected={
+                      selectedDate !== null && isSameDay(date, selectedDate)
+                    }
+                    stats={getStatsForDay(dateKey)}
+                    dayDetailStats={dayDetailStats}
+                    dayLabel={format(date, "d MMMM yyyy", { locale: ru })}
+                    operationsLabel={t("dashboard.incomeCalendarOperations")}
+                    conversionLabel={t("dashboard.incomeCalendarConversion")}
+                    earningsLabel={t("dashboard.incomeCalendarEarnings")}
+                    noDataLabel={t("dashboard.dayDetailNoData")}
+                    onSelect={() => setSelectedDate(date)}
+                    onOpenChange={(open) => {
+                      if (!open) setSelectedDate(null);
+                    }}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import type { IncomeCalendarDayStats } from "./types";
+import type { DayDetailStats, IncomeCalendarDayStats } from "./types";
 
 /** Key: YYYY-MM-DD. Days not in map have no work done (show empty, not zeros). */
 export const INCOME_CALENDAR_DAY_DATA: Record<string, IncomeCalendarDayStats> = {
@@ -30,4 +30,56 @@ export const INCOME_CALENDAR_DAY_DATA: Record<string, IncomeCalendarDayStats> = 
   "2026-04-01": { operations: 14, conversionPct: 3.9, earningsUsdt: 165.0 },
   "2026-04-02": { operations: 8, conversionPct: 2.6, earningsUsdt: 82.0 },
   "2026-04-05": { operations: 26, conversionPct: 6.2, earningsUsdt: 335.0 },
+};
+
+/** Key: YYYY-MM-DD. Detailed stats for day detail panel when a day is selected. */
+export const INCOME_CALENDAR_DAY_DETAIL_DATA: Record<string, DayDetailStats> = {
+  "2026-03-10": {
+    payIn: {
+      operations: 12,
+      successCount: 5,
+      failedCount: 6,
+      volumeUsdt: 115.44,
+      profitUsdt: 57.26,
+      conversionPct: 41.7,
+    },
+    payOut: {
+      operations: 6,
+      successCount: 4,
+      failedCount: 2,
+      volumeUsdt: 345.12,
+      profitUsdt: -115.82,
+      conversionPct: 66.7,
+    },
+    totalOperations: 18,
+    totalSuccess: 9,
+    totalFailed: 8,
+    turnoverUsdt: 460.55,
+    platformIncomeUsdt: -58.55,
+    avgConversionPct: 50.0,
+  },
+  "2026-03-06": {
+    payIn: {
+      operations: 18,
+      successCount: 14,
+      failedCount: 4,
+      volumeUsdt: 420.0,
+      profitUsdt: 98.5,
+      conversionPct: 77.8,
+    },
+    payOut: {
+      operations: 7,
+      successCount: 5,
+      failedCount: 2,
+      volumeUsdt: 180.0,
+      profitUsdt: -22.0,
+      conversionPct: 71.4,
+    },
+    totalOperations: 25,
+    totalSuccess: 19,
+    totalFailed: 6,
+    turnoverUsdt: 600.0,
+    platformIncomeUsdt: 76.5,
+    avgConversionPct: 76.0,
+  },
 };
