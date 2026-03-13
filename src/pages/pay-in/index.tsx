@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useUserStore } from "@/stores/use-user-store";
 import { CollapsibleFilterPanel } from "@/components/collapsible-filter-panel";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,12 +22,15 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 import { PayInTable } from "./pay-in-table";
 import { PayInToolbar } from "./pay-in-toolbar";
+import { TraderPayInList } from "./trader-pay-in-list";
 import { usePayInPage } from "./models/use-pay-in-page";
 
 export function PayInPage() {
   const { t } = useTranslation();
+  const role = useUserStore((s) => s.role);
   const isMobile = useIsMobile();
   const [filterOpen, setFilterOpen] = useState(false);
+  const isTrader = role === "trader";
   const {
     table,
     search,
@@ -49,6 +53,14 @@ export function PayInPage() {
     handleConfirmDelete,
     pageSizeOptions,
   } = usePayInPage();
+
+  if (isTrader) {
+    return (
+      <div className="space-y-4">
+        <TraderPayInList />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

@@ -1,6 +1,7 @@
 {
   "common": {
     "close": "Закрыть",
+    "loading": "Загрузка...",
     "rowsPerPage": "Строк на странице",
     "save": "Сохранить",
     "create": "Создать",
@@ -51,6 +52,21 @@
     "balance": "Баланс",
     "kursOnEntry": "Курс на вход",
     "kursOnWithdraw": "Курс на вывод"
+  },
+  "trader": {
+    "header": {
+      "ariaLabel": "Шапка трейдера",
+      "traderName": "Трейдер",
+      "settings": "Настройки"
+    },
+    "nav": {
+      "ariaLabel": "Навигация трейдера",
+      "dashboard": "Дашборд",
+      "transactions": "Транзакции",
+      "appeals": "Апеляции",
+      "requisites": "Реквизиты",
+      "more": "Еще"
+    }
   },
   "dashboard": {
     "balanceLabel": "Баланс",
