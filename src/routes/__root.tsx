@@ -37,35 +37,43 @@ export function RootComponent() {
   useEffect(() => {
     if (!isTrader) return;
     const el = mainRef.current;
-    if (!el) return;
-    lastScrollTopRef.current = el.scrollTop;
+    const getScrollTop = () => {
+      const mainScroll = el?.scrollTop ?? 0;
+      const windowScroll = typeof window !== "undefined" ? window.scrollY : 0;
+      return Math.max(mainScroll, windowScroll);
+    };
+    lastScrollTopRef.current = getScrollTop();
     let rafId = 0;
+    const updateVisibility = () => {
+      const st = getScrollTop();
+      const last = lastScrollTopRef.current;
+      const scrollingDown = st > last;
+      const scrollingUp = st < last;
+      if (st <= TRADER_HEADER_TOP_ZONE) {
+        setTraderHeaderVisible(true);
+        lastScrollTopRef.current = st;
+      } else if (scrollingDown && st > TRADER_HEADER_SCROLL_THRESHOLD) {
+        setTraderHeaderVisible(false);
+        lastScrollTopRef.current = st;
+      } else if (scrollingUp) {
+        setTraderHeaderVisible(true);
+      } else {
+        lastScrollTopRef.current = st;
+      }
+    };
     const handleScroll = () => {
       if (rafId) cancelAnimationFrame(rafId);
       rafId = requestAnimationFrame(() => {
         rafId = 0;
-        const st = el.scrollTop;
-        const last = lastScrollTopRef.current;
-        const scrollingDown = st > last;
-        const scrollingUp = st < last;
-        if (st <= TRADER_HEADER_TOP_ZONE) {
-          setTraderHeaderVisible(true);
-          lastScrollTopRef.current = st;
-        } else if (scrollingDown && st > TRADER_HEADER_SCROLL_THRESHOLD) {
-          setTraderHeaderVisible(false);
-          lastScrollTopRef.current = st;
-        } else if (scrollingUp) {
-          setTraderHeaderVisible(true);
-          // Don't update last so a reflow after showing header doesn't get interpreted as scroll-down
-        } else {
-          lastScrollTopRef.current = st;
-        }
+        updateVisibility();
       });
     };
-    el.addEventListener("scroll", handleScroll, { passive: true });
+    if (el) el.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       if (rafId) cancelAnimationFrame(rafId);
-      el.removeEventListener("scroll", handleScroll);
+      el?.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [isTrader]);
 
@@ -75,15 +83,19 @@ export function RootComponent() {
 
   return (
     <TooltipProvider>
-      <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
+      <SidebarProvider
+        open={sidebarOpen}
+        onOpenChange={setSidebarOpen}
+        className={cn(isTrader && "h-svh max-h-svh overflow-hidden")}
+      >
         <AppSidebar />
         <SidebarInset>
           {!isTrader && <AppHeader />}
           {isTrader && (
             <div
               className={cn(
-                "overflow-hidden transition-[max-height] duration-300 ease-out",
-                traderHeaderVisible ? "max-h-20" : "max-h-0"
+                "sticky top-0 z-40 shrink-0 overflow-hidden md:relative md:z-auto",
+                traderHeaderVisible ? "h-[76px]" : "h-0"
               )}
             >
               <TraderHeader />
@@ -93,7 +105,7 @@ export function RootComponent() {
             ref={mainRef}
             className={cn(
               "min-h-0 flex-1 overflow-auto",
-              isTrader && "pb-20 md:pb-0 mb-20 md:mb-0"
+              isTrader && "pb-20 md:pb-0 mb-10 md:mb-0"
             )}
           >
             <div className="mx-auto w-full max-w-7xl px-4 py-4 sm:px-6 sm:py-6">

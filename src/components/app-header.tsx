@@ -11,14 +11,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useHeaderStore, type Locale } from "@/stores/use-header-store";
 import {
-  useHeaderStore,
-  type Locale,
-  type Theme,
-} from "@/stores/use-header-store";
-import {
-  SunIcon,
-  MoonIcon,
   LanguagesIcon,
   UserIcon,
   LogOutIcon,
@@ -30,42 +25,10 @@ import { useUserStore, type UserRole } from "@/stores/use-user-store";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { useState } from "react";
 
-const themeOptions: { value: Theme; labelKey: string; icon: typeof SunIcon }[] = [
-  { value: "light", labelKey: "header.themeLight", icon: SunIcon },
-  { value: "dark", labelKey: "header.themeDark", icon: MoonIcon },
-];
-
 const localeOptions: { value: Locale; labelKey: string }[] = [
   { value: "ru", labelKey: "header.localeRu" },
   { value: "en", labelKey: "header.localeEn" },
 ];
-
-function ThemeToggle() {
-  const { t } = useTranslation();
-  const { theme, setTheme } = useHeaderStore();
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="size-9 shrink-0">
-          <SunIcon className="size-4 dark:hidden" />
-          <MoonIcon className="size-4 hidden dark:block" />
-          <span className="sr-only">{t("header.changeTheme")}</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-40">
-        <DropdownMenuRadioGroup value={theme} onValueChange={(v) => setTheme(v as Theme)}>
-          {themeOptions.map((opt) => (
-            <DropdownMenuRadioItem key={opt.value} value={opt.value}>
-              <opt.icon className="size-4" />
-              {t(opt.labelKey)}
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-}
 
 function LanguageToggle() {
   const { t } = useTranslation();

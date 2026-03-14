@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
-import { format } from "date-fns";
+import isToday from "dayjs/plugin/isToday";
+import isYesterday from "dayjs/plugin/isYesterday";
 
 import type { PayInRow, PayInMethodStatus } from "./types";
+
+dayjs.extend(isToday);
+dayjs.extend(isYesterday);
 
 import {
   Collapsible,
@@ -14,10 +18,10 @@ import {
 import { useTraderPayInList } from "./models/use-trader-pay-in-list";
 import { cn } from "@/lib/utils";
 
-const STATUS_LINE_MAP: Record<PayInMethodStatus, string> = {
-  success: "bg-success",
-  pending: "bg-orange",
-  failed: "bg-destructive",
+const STATUS_TEXT_MAP: Record<PayInMethodStatus, string> = {
+  success: "text-success",
+  pending: "text-orange",
+  failed: "text-destructive",
 };
 
 function formatAmount(amountUsd: number): string {
@@ -50,22 +54,23 @@ function formatCardDisplay(card: string, requisite?: string): string {
   return card;
 }
 
-function groupByDate(items: PayInRow[]): Map<string, PayInRow[]> {
-  const map = new Map<string, PayInRow[]>();
-  for (const item of items) {
-    const key = format(new Date(item.createdAt), "yyyy-MM-dd");
-    const list = map.get(key) ?? [];
-    list.push(item);
-    map.set(key, list);
-  }
-  return map;
-}
-
 const METHOD_LABEL_KEYS: Record<PayInMethodStatus, string> = {
   success: "payIn.statusSuccess",
   pending: "payIn.statusPending",
   failed: "payIn.statusFailed",
 };
+
+/** Format for card header: "Today 04:30", "Yesterday 04:30", or "14 Mar 04:30". */
+function formatCardDateLabel(
+  createdAt: string,
+  t: (key: string) => string
+): string {
+  const d = dayjs(createdAt);
+  const time = d.format("HH:mm");
+  if (d.isToday()) return `${t("payIn.today")} ${time}`;
+  if (d.isYesterday()) return `${t("payIn.yesterday")} ${time}`;
+  return d.format("D MMM HH:mm");
+}
 
 function TransactionDetailPanel({ item }: { item: PayInRow }) {
   const { t } = useTranslation();
@@ -73,7 +78,7 @@ function TransactionDetailPanel({ item }: { item: PayInRow }) {
   const createdAtLabel = dayjs(item.createdAt).format("D MMMM YYYY HH:mm");
 
   return (
-    <div className="border-t border-border bg-muted/20 px-4 py-4">
+    <div className="rounded-b-lg border-t border-border bg-muted/30 px-4 py-4 dark:bg-muted/20">
       <dl className="grid grid-cols-2 gap-2 text-sm">
         <div>
           <dt className="text-muted-foreground">{t("payIn.uid")}</dt>
@@ -126,15 +131,17 @@ function TransactionRow({
   item,
   isExpanded,
   onOpenChange,
+  dateLabel,
 }: {
   item: PayInRow;
   isExpanded: boolean;
   onOpenChange: (open: boolean) => void;
+  dateLabel: string;
 }) {
-  const timeLabel = format(new Date(item.createdAt), "HH:mm");
+  const { t } = useTranslation();
   const amountLabel = `${formatAmount(item.amountUsd)} USD`;
-  const lineClassName = STATUS_LINE_MAP[item.method];
   const cardDisplay = formatCardDisplay(item.card, item.requisite);
+  const statusLabel = t(METHOD_LABEL_KEYS[item.method]);
 
   return (
     <Collapsible open={isExpanded} onOpenChange={onOpenChange}>
@@ -143,27 +150,30 @@ function TransactionRow({
           <button
             type="button"
             className={cn(
-              "relative flex w-full flex-col gap-3 overflow-hidden bg-muted/30 pl-5 pr-4 py-4 text-left transition-colors hover:bg-muted/50 active:bg-muted/70",
+              "flex w-full flex-row items-center justify-between gap-4 overflow-hidden rounded-lg bg-muted/40 px-4 py-3 text-left transition-colors hover:bg-muted/60 active:bg-muted/70 dark:bg-card dark:hover:bg-muted/50",
               "touch-manipulation",
-              isExpanded && "bg-muted/40"
+              isExpanded && "rounded-b-none bg-muted/50 dark:bg-muted/30"
             )}
           >
-            <div
-              className={cn(
-                "absolute left-0 top-0 bottom-0 w-0.5",
-                lineClassName
-              )}
-              aria-hidden
-            />
-            <span className="text-sm font-medium tabular-nums tracking-wide text-foreground min-w-0 truncate">
-              {cardDisplay}
-            </span>
-            <div className="flex flex-row items-center justify-between gap-3">
-              <span className="text-xs text-muted-foreground shrink-0 tabular-nums">
-                {timeLabel}
+            <div className="flex min-w-0 flex-1 flex-col justify-center gap-2">
+              <span className="truncate text-sm font-medium tabular-nums tracking-wide text-foreground leading-tight">
+                {cardDisplay}
               </span>
-              <span className="text-lg font-semibold tabular-nums text-foreground">
+              <span className="text-xs text-muted-foreground/80 tabular-nums leading-tight">
+                {dateLabel}
+              </span>
+            </div>
+            <div className="flex shrink-0 flex-col items-end justify-center gap-2">
+              <span className="text-sm font-semibold tabular-nums text-foreground leading-tight">
                 {amountLabel}
+              </span>
+              <span
+                className={cn(
+                  "text-xs font-medium leading-tight",
+                  STATUS_TEXT_MAP[item.method]
+                )}
+              >
+                {statusLabel}
               </span>
             </div>
           </button>
@@ -228,34 +238,26 @@ export function TraderPayInList() {
     );
   }
 
-  const byDate = groupByDate(rows);
-  const sortedDates = Array.from(byDate.keys()).sort((a, b) => b.localeCompare(a));
+  const sortedRows = [...rows].sort(
+    (a, b) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
 
   return (
-    <div className="flex flex-col gap-6">
-      {sortedDates.map((dateKey) => {
-        const dateLabel = dayjs(dateKey).format("D MMMM YYYY");
-        const items = byDate.get(dateKey) ?? [];
-        return (
-          <section key={dateKey} className="flex flex-col">
-            <h2 className="sticky top-0 z-10 bg-background/95 px-1 py-2 text-sm font-medium text-muted-foreground backdrop-blur supports-backdrop-filter:bg-background/80">
-              {dateLabel}
-            </h2>
-            <div className="flex flex-col divide-y divide-border">
-              {items.map((item) => (
-                <TransactionRow
-                  key={item.uid}
-                  item={item}
-                  isExpanded={expandedUid === item.uid}
-                  onOpenChange={(open) =>
-                    setExpandedUid(open ? item.uid : null)
-                  }
-                />
-              ))}
-            </div>
-          </section>
-        );
-      })}
+    <div className="flex flex-col">
+      <div className="flex flex-col gap-3">
+        {sortedRows.map((item) => (
+          <TransactionRow
+            key={item.uid}
+            item={item}
+            dateLabel={formatCardDateLabel(item.createdAt, t)}
+            isExpanded={expandedUid === item.uid}
+            onOpenChange={(open) =>
+              setExpandedUid(open ? item.uid : null)
+            }
+          />
+        ))}
+      </div>
       <div ref={sentinelRef} className="h-4 shrink-0" aria-hidden />
       {isFetchingNextPage && (
         <div className="py-2 text-center text-sm text-muted-foreground">

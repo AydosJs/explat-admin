@@ -1,43 +1,38 @@
 import { useTranslation } from "react-i18next";
-import { Settings, User } from "lucide-react";
+import { User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 export function TraderHeader() {
   const { t } = useTranslation();
+  const traderName = t("trader.header.traderName");
 
   return (
     <header
       className={cn(
-        "flex shrink-0 items-center justify-between gap-2 rounded-b-lg border-b border-border bg-background px-4 py-3 md:hidden"
+        "flex h-[76px] shrink-0 items-center justify-between gap-3 border-0 bg-trader-header px-4 py-3 text-trader-header-foreground md:hidden"
       )}
       aria-label={t("trader.header.ariaLabel")}
     >
       <div className="flex min-w-0 flex-1 items-center gap-3">
-        <Avatar className="size-10 shrink-0 ring-2 ring-border/50">
+        <Avatar className="size-10 shrink-0 ring-2 ring-trader-header-foreground/30">
           <AvatarImage src="" alt="" />
-          <AvatarFallback className="bg-muted w-full text-muted-foreground">
+          <AvatarFallback className="bg-trader-header-foreground/20 w-full text-trader-header-foreground">
             <span className="flex size-full items-center justify-center">
               <User className="size-5 shrink-0" aria-hidden />
             </span>
           </AvatarFallback>
         </Avatar>
-        <span className="truncate text-sm font-medium text-foreground">
-          {t("trader.header.traderName")}
+        <span className="truncate text-sm font-medium text-trader-header-foreground">
+          {t("trader.header.greeting", { name: traderName })}
         </span>
       </div>
-      <Button
-        variant="ghost"
-        size="icon"
-        className="size-9 shrink-0"
-        aria-label={t("trader.header.settings")}
-      >
-        <span className="flex size-full items-center justify-center">
-          <Settings className="size-5 shrink-0" aria-hidden />
-        </span>
-      </Button>
+      <ThemeToggle
+        iconClassName="size-6"
+        triggerClassName="size-11 text-trader-header-foreground hover:bg-trader-header-foreground/10 hover:text-trader-header-foreground"
+      />
     </header>
   );
 }

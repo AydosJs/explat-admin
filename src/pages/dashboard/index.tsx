@@ -3,9 +3,11 @@ import { useTranslation } from "react-i18next";
 import { RotateCw, Search } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
+import { useUserStore } from "@/stores/use-user-store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+import { TraderDashboard } from "./trader-dashboard/trader-dashboard";
 import { DashboardConversionCard } from "./dashboard-conversion-card";
 import { DashboardStatsCard } from "./dashboard-stats-card";
 import { DashboardPayInOutChart } from "./dashboard-pay-in-out-chart";
@@ -34,6 +36,7 @@ import { MerchantsTable } from "./merchants-table";
 
 export function DashboardPage() {
   const { t } = useTranslation();
+  const role = useUserStore((s) => s.role);
   const [search, setSearch] = useState("");
   const [statsPeriod, setStatsPeriod] = useState<DashboardStatsPeriod>("all");
   const [profitPeriod, setProfitPeriod] = useState<DashboardStatsPeriod>("all");
@@ -54,6 +57,10 @@ export function DashboardPage() {
     () => filteredMerchants.reduce((sum, m) => sum + m.balanceUsdt, 0),
     [filteredMerchants]
   );
+
+  if (role === "trader") {
+    return <TraderDashboard />;
+  }
 
   return (
     <div className="space-y-6">
